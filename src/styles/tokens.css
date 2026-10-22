@@ -1,14 +1,14 @@
 /* Generated from tokens.json by scripts/build-tokens.mjs. Do not edit by hand. */
 
 :root {
-  --color-primary: #1E5EFF;
-  --color-primary-hover: #1848CC;
-  --color-on-primary: #FFFFFF;
+  --color-primary: #1e5eff;
+  --color-primary-hover: #1848cc;
+  --color-on-primary: #ffffff;
   --color-text: #171717;
   --color-text-muted: #737373;
-  --color-surface: #FFFFFF;
-  --color-border: #E5E5E5;
-  --color-danger: #D32F2F;
+  --color-surface: #ffffff;
+  --color-border: #e5e5e5;
+  --color-danger: #d32f2f;
   --spacing-sm: 8px;
   --spacing-md: 16px;
   --spacing-lg: 24px;

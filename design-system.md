@@ -10,14 +10,14 @@ Generated from `tokens.json`. Do not edit by hand. Change tokens in Figma and pu
 
 | Token | CSS variable | Value | Type |
 | --- | --- | --- | --- |
-| `color.primary` | `--color-primary` | #1E5EFF | color |
-| `color.primary-hover` | `--color-primary-hover` | #1848CC | color |
-| `color.on-primary` | `--color-on-primary` | #FFFFFF | color |
+| `color.primary` | `--color-primary` | #1e5eff | color |
+| `color.primary-hover` | `--color-primary-hover` | #1848cc | color |
+| `color.on-primary` | `--color-on-primary` | #ffffff | color |
 | `color.text` | `--color-text` | #171717 | color |
 | `color.text-muted` | `--color-text-muted` | #737373 | color |
-| `color.surface` | `--color-surface` | #FFFFFF | color |
-| `color.border` | `--color-border` | #E5E5E5 | color |
-| `color.danger` | `--color-danger` | #D32F2F | color |
+| `color.surface` | `--color-surface` | #ffffff | color |
+| `color.border` | `--color-border` | #e5e5e5 | color |
+| `color.danger` | `--color-danger` | #d32f2f | color |
 
 ## spacing
 
