@@ -48,6 +48,12 @@ jobs:
       - name: Write or update component code with Claude
         id: claude
         uses: anthropics/claude-code-action@v1
+        env:
+          # Company AI gateway support. Set these as repo VARIABLES (not secrets):
+          #   ANTHROPIC_BASE_URL = the gateway address (leave unset for Anthropic directly)
+          #   ANTHROPIC_MODEL    = the model name the gateway expects (optional)
+          ANTHROPIC_BASE_URL: ${{ vars.ANTHROPIC_BASE_URL }}
+          ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
