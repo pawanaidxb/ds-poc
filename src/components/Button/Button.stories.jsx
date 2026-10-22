@@ -1,3 +1,4 @@
+import React from "react";
 import { Button } from "./Button";
 
 export default {
@@ -5,6 +6,8 @@ export default {
   component: Button,
   argTypes: {
     variant: { control: "inline-radio", options: ["primary", "secondary"] },
+    disabled: { control: "boolean" },
+    children: { control: "text" },
   },
 };
 
