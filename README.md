@@ -12,6 +12,7 @@ and Figma Code Connect before using them on the real design system.
 | `design-system.md` | Generated. Readable list of every token. Do not edit. |
 | `src/components/Button/Button.jsx` | The Button component (matches Figma "Button"). |
 | `src/components/Card/Card.jsx` | The Card component (matches Figma "Card"). |
+| `src/components/Input/Input.jsx` | The Input component (matches Figma "Input"). |
 | `scripts/build-tokens.mjs` | Turns `tokens.json` into the two generated files. |
 | `.github/workflows/sync.yml` | The automation. Runs on every save to `main`. |
 | `.storybook/` | Storybook setup. |
