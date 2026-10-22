@@ -1,0 +1,68 @@
+# Runs every time something is saved to the main branch
+# (for example, when Tokens Studio pushes tokens.json from Figma).
+#  1. Builds src/styles/tokens.css and design-system.md from tokens.json
+#  2. Saves those two files back into the repo if they changed
+#  3. Builds Storybook and publishes it to GitHub Pages
+name: Sync tokens and publish Storybook
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: sync
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Get the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build tokens.css and design-system.md
+        run: node scripts/build-tokens.mjs
+
+      - name: Save the generated files back to the repo
+        run: |
+          git config user.name "token-bot"
+          git config user.email "token-bot@users.noreply.github.com"
+          git add src/styles/tokens.css design-system.md
+          if git diff --cached --quiet; then
+            echo "No token changes to save."
+          else
+            git commit -m "Update generated tokens [skip ci]"
+            git push
+          fi
+
+      - name: Install Storybook
+        run: npm install --no-audit --no-fund
+
+      - name: Build Storybook
+        run: npm run build-storybook
+
+      - name: Prepare GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Storybook
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: storybook-static
+
+      - name: Publish Storybook
+        id: deploy
+        uses: actions/deploy-pages@v4

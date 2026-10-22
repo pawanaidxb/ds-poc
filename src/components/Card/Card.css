@@ -1,0 +1,22 @@
+/* Every value is a token. */
+.poc-card {
+  width: 320px;
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+.poc-card__title {
+  margin: 0 0 var(--spacing-sm);
+  color: var(--color-text);
+  font-size: 18px;
+}
+.poc-card__text {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+.poc-card__actions {
+  margin-top: var(--spacing-md);
+  display: flex;
+  gap: var(--spacing-sm);
+}

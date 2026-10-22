@@ -1,0 +1,25 @@
+/* Every value is a token. Change the token in Figma and this updates. */
+.poc-button {
+  font: inherit;
+  font-weight: 600;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+.poc-button--primary {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+.poc-button--primary:hover {
+  background: var(--color-primary-hover);
+}
+.poc-button--secondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+.poc-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

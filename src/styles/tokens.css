@@ -1,0 +1,17 @@
+/* Generated from tokens.json by scripts/build-tokens.mjs. Do not edit by hand. */
+
+:root {
+  --color-primary: #1E5EFF;
+  --color-primary-hover: #1848CC;
+  --color-on-primary: #FFFFFF;
+  --color-text: #171717;
+  --color-text-muted: #737373;
+  --color-surface: #FFFFFF;
+  --color-border: #E5E5E5;
+  --color-danger: #D32F2F;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+}

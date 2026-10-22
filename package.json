@@ -1,0 +1,23 @@
+{
+  "name": "ds-poc",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "tokens": "node scripts/build-tokens.mjs",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build -o storybook-static"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "8.6.12",
+    "@storybook/react": "8.6.12",
+    "@storybook/react-vite": "8.6.12",
+    "@vitejs/plugin-react": "4.3.4",
+    "storybook": "8.6.12",
+    "vite": "6.2.6"
+  }
+}

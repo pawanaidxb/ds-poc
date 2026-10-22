@@ -1,0 +1,6 @@
+/* Base page styles. Uses tokens only. */
+body {
+  font-family: "Urbanist", system-ui, sans-serif;
+  color: var(--color-text);
+  background: var(--color-surface);
+}
