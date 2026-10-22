@@ -46,6 +46,7 @@ jobs:
         run: node scripts/fetch-figma-components.mjs
 
       - name: Write or update component code with Claude
+        id: claude
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -62,6 +63,17 @@ jobs:
             Then write a short summary to pr-body.md (not inside src/) with three headings:
               "Created", "Updated", "Design gaps" (raw values with no Figma variable, naming problems, anything unclear).
             Do not commit or push; the next step opens the pull request.
+
+      - name: Show Claude's message if it failed
+        if: failure() && steps.claude.outputs.execution_file != ''
+        run: |
+          node -e '
+            const fs = require("fs");
+            const m = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+            const r = m.filter(x => x.type === "result").pop() || m[m.length - 1];
+            const text = JSON.stringify(r).slice(0, 3000).replace(/%/g, "%25").replace(/\r?\n/g, " ");
+            console.log("::error title=Claude result::" + text);
+          ' "${{ steps.claude.outputs.execution_file }}"
 
       - name: Make sure the PR has a description
         run: test -f pr-body.md || echo "Components updated from Figma." > pr-body.md
