@@ -29,3 +29,13 @@ and Figma Code Connect before using them on the real design system.
 - Change tokens only in Figma.
 - Do not hand-edit `src/styles/tokens.css` or `design-system.md`.
 - Components use `var(--token-name)`, never raw hex values.
+
+## Automatic component code (Figma publish → pull request)
+
+1. Publish the Figma library.
+2. A relay (n8n) tells GitHub, and **Build components from Figma** runs (see the **Actions** tab).
+3. It downloads the components into `figma/components/` and Claude writes or updates the code in `src/components/`.
+4. A pull request appears. Check it in Storybook, then click **Merge**.
+5. The sync automation publishes Storybook.
+
+You can also start it by hand: **Actions** > **Build components from Figma** > **Run workflow**.

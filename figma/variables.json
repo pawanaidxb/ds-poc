@@ -1,0 +1,16 @@
+{
+  "_about": "Figma variable ID -> token name and CSS variable. Used by the AI build to turn Figma variable links into var(--name). Refresh when variables are added (ask Claude, or match by value in tokens.json).",
+  "VariableID:2:3": { "name": "color/primary", "css": "--color-primary" },
+  "VariableID:2:4": { "name": "color/primary-hover", "css": "--color-primary-hover" },
+  "VariableID:2:5": { "name": "color/on-primary", "css": "--color-on-primary" },
+  "VariableID:2:6": { "name": "color/text", "css": "--color-text" },
+  "VariableID:2:7": { "name": "color/text-muted", "css": "--color-text-muted" },
+  "VariableID:2:8": { "name": "color/surface", "css": "--color-surface" },
+  "VariableID:2:9": { "name": "color/border", "css": "--color-border" },
+  "VariableID:2:10": { "name": "color/danger", "css": "--color-danger" },
+  "VariableID:2:11": { "name": "spacing/sm", "css": "--spacing-sm" },
+  "VariableID:2:12": { "name": "spacing/md", "css": "--spacing-md" },
+  "VariableID:2:13": { "name": "spacing/lg", "css": "--spacing-lg" },
+  "VariableID:2:14": { "name": "radius/sm", "css": "--radius-sm" },
+  "VariableID:2:15": { "name": "radius/md", "css": "--radius-md" }
+}

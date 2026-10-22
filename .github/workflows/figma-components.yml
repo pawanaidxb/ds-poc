@@ -1,0 +1,80 @@
+# Builds component code from Figma with Claude and opens a pull request.
+# Starts when:
+#   - the Figma library is published (a relay sends "figma-library-publish"), or
+#   - you click "Run workflow" on the Actions tab.
+# Needs two repo secrets: ANTHROPIC_API_KEY and FIGMA_TOKEN.
+name: Build components from Figma
+
+on:
+  repository_dispatch:
+    types: [figma-library-publish]
+  workflow_dispatch:
+    inputs:
+      components:
+        description: "Component names, comma separated (empty = all published components)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+concurrency:
+  group: figma-components
+  cancel-in-progress: false
+
+env:
+  FIGMA_FILE_KEY: eY0kt0YmL6kMwPKAOrVD30
+  ONLY: ${{ github.event.inputs.components || github.event.client_payload.components || '' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Download components from Figma
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+        run: node scripts/fetch-figma-components.mjs
+
+      - name: Write or update component code with Claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          claude_args: "--max-turns 60 --allowedTools Read,Write,Edit,Glob,Grep,Bash(ls:*),Bash(cat:*),Bash(node:*)"
+          prompt: |
+            Read CLAUDE.md first and follow it exactly.
+            The latest Figma components are in figma/components/ (index.json lists them; each has a .json structure and a .png picture).
+            Focus on these components if listed (otherwise check all): "${{ env.ONLY }}".
+            For each component:
+              1. If src/components/<Name>/ does not exist, create it following CLAUDE.md.
+              2. If it exists, compare the code with the Figma JSON and picture. Update it only where Figma changed
+                 (variants, properties, states, token bindings, sizes). Leave matching components untouched.
+            Then write a short summary to pr-body.md (not inside src/) with three headings:
+              "Created", "Updated", "Design gaps" (raw values with no Figma variable, naming problems, anything unclear).
+            Do not commit or push; the next step opens the pull request.
+
+      - name: Make sure the PR has a description
+        run: test -f pr-body.md || echo "Components updated from Figma." > pr-body.md
+
+      - name: Open a pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: figma/component-updates
+          delete-branch: true
+          commit-message: "Update components from Figma"
+          title: "Components from Figma: ${{ env.ONLY || 'all' }}"
+          body-path: pr-body.md
+          add-paths: |
+            src/**
+            figma/**
+            README.md
