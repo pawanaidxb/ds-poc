@@ -10,8 +10,8 @@ Generated from `tokens.json`. Do not edit by hand. Change tokens in Figma and pu
 
 | Token | CSS variable | Value | Type |
 | --- | --- | --- | --- |
-| `color.primary` | `--color-primary` | #1e5eff | color |
-| `color.primary-hover` | `--color-primary-hover` | #1848cc | color |
+| `color.primary` | `--color-primary` | #e60053 | color |
+| `color.primary-hover` | `--color-primary-hover` | #c90049 | color |
 | `color.on-primary` | `--color-on-primary` | #ffffff | color |
 | `color.text` | `--color-text` | #171717 | color |
 | `color.text-muted` | `--color-text-muted` | #737373 | color |
