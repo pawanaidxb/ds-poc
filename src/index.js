@@ -23,3 +23,4 @@ export { TableBulkSelectionBar } from "./components/TableBulkSelectionBar/TableB
 export { TableDropIndicator } from "./components/TableDropIndicator/TableDropIndicator";
 export { TableDragPreview } from "./components/TableDragPreview/TableDragPreview";
 export { TableAdvancedFilterPanel } from "./components/TableAdvancedFilterPanel/TableAdvancedFilterPanel";
+export { DataTable } from "./components/DataTable/DataTable";

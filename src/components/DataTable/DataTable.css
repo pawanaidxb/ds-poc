@@ -1,0 +1,44 @@
+/* DataTable — layout from the Figma "Data table" component. Tokens only, except where noted. */
+.poc-dt {
+  display: flex; flex-direction: column;
+  background: var(--color-surface); color: var(--color-text);
+  border: 1px solid var(--color-border); border-radius: var(--radius-md);
+  font-family: "Inter", system-ui, sans-serif;
+  max-width: 100%; overflow: hidden;
+}
+.poc-dt__heading { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--spacing-md); flex-wrap: wrap; padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-ml); }
+.poc-dt__title { margin: 0 0 var(--spacing-2xs, 6px); font-size: 22px; line-height: 27px; font-weight: 600; }
+.poc-dt__desc { margin: 0; font-size: 12px; line-height: 15px; color: var(--color-text-muted); }
+.poc-dt__crumb { font-size: 11px; line-height: 13px; color: var(--color-text-muted); }
+.poc-dt .poc-ttool { border-left: 0; border-right: 0; }
+.poc-dt__context { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-md); min-height: 48px; padding: var(--spacing-2xs, 6px) var(--spacing-lg); box-sizing: border-box; }
+.poc-dt__view { font-size: 12px; line-height: 15px; color: var(--color-text-muted); }
+.poc-dt__pinned { font-size: 10px; line-height: 12px; color: var(--color-text-muted); }
+.poc-dt__body { display: flex; align-items: stretch; padding: 0 var(--spacing-lg); gap: 0; }
+.poc-dt__grid { position: relative; flex: 1 1 auto; min-width: 0; border: 1px solid var(--color-border); border-radius: var(--radius-sm); }
+.poc-dt__scroll { max-height: 640px; overflow: auto; border-radius: var(--radius-sm); }
+.poc-dt__table { border-collapse: separate; border-spacing: 0; table-layout: fixed; min-width: 100%; }
+.poc-dt__groups th { position: sticky; top: 0; z-index: 3; background: var(--color-surface-sunken); border-bottom: 1px solid var(--color-border); }
+.poc-dt__headers th { position: sticky; top: 30px; z-index: 3; background: var(--color-surface-muted); border-bottom: 1px solid var(--color-border); }
+.poc-dt__headers th.is-filtered { background: var(--color-primary-subtle); }
+.poc-dt__selectall { width: 44px; padding: 0; }
+.poc-dt__selectall-inner { display: flex; align-items: center; justify-content: flex-end; padding-right: var(--spacing-xs); height: 42px; }
+.poc-dt__groupspacer { padding: 0; }
+.poc-dt__table .poc-tsel__inner { padding-left: var(--spacing-2xs, 6px); }
+.poc-dt__empty { padding: var(--spacing-lg); font-size: 13px; color: var(--color-text-muted); text-align: center; }
+.poc-dt__empty button { margin-left: var(--spacing-sm); background: none; border: 0; padding: 0; font: inherit; color: var(--color-primary); text-decoration: underline; cursor: pointer; }
+.poc-dt__table tfoot td { position: sticky; bottom: 0; z-index: 2; }
+.poc-dt__totals {
+  height: 38px; box-sizing: border-box; padding: 0 var(--spacing-14, 14px);
+  background: var(--color-surface-muted); border-top: 1px solid var(--color-border);
+  font-size: 11px; line-height: 13px;
+}
+.poc-dt__totals { display: table-cell; }
+.poc-dt__totals-label { font-weight: 500; color: var(--color-icon); }
+.poc-dt__totals-nums { float: right; display: inline-flex; gap: var(--spacing-ml); color: var(--color-icon); font-variant-numeric: tabular-nums; }
+.poc-dt__totals-nums strong { font-weight: 600; color: var(--color-text); }
+.poc-dt__popover { position: absolute; top: 76px; z-index: 10; }
+.poc-dt__popover--right { left: auto; right: var(--spacing-sm); }
+.poc-dt__footer { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-md); flex-wrap: wrap; min-height: 66px; padding: var(--spacing-sm) var(--spacing-lg); box-sizing: border-box; }
+.poc-dt__showing { font-size: 11px; line-height: 13px; color: var(--color-text-muted); }
+.poc-dt .poc-tafp { margin-left: var(--spacing-md); border: 1px solid var(--color-border); border-radius: var(--radius-sm); flex: none; }

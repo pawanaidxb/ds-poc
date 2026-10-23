@@ -12,18 +12,18 @@ import "./TableHeaderCell.css";
  * State=Drop target -> dropTarget · Disabled -> disabled · Hover -> CSS :hover
  * Show sort / Show filter / Show drag handle (booleans) -> showSort, showFilter, showDragHandle
  */
-export function TableHeaderCell({
+export const TableHeaderCell = React.forwardRef(function TableHeaderCell({
   title = "Column", align = "left", sort = "none",
   showSort = true, showFilter = true, showDragHandle = true,
   filtered = false, resizing = false, dragging = false, dropTarget = false, disabled = false,
   width, onSort, onFilter, onResizeStart, dragHandleProps, ...rest
-}) {
+}, ref) {
   const cls = ["poc-thead", `poc-thead--${align}`,
     filtered && "is-filtered", resizing && "is-resizing", dragging && "is-dragging",
     dropTarget && "is-drop-target", disabled && "is-disabled"].filter(Boolean).join(" ");
   const ariaSort = sort === "asc" ? "ascending" : sort === "desc" ? "descending" : "none";
   return (
-    <th className={cls} style={width ? { width } : undefined} aria-sort={ariaSort} scope="col" {...rest}>
+    <th ref={ref} className={cls} style={width ? { width } : undefined} aria-sort={ariaSort} scope="col" {...rest}>
       <span className="poc-thead__inner">
         <span className="poc-thead__title">{title}</span>
         {showSort && (
@@ -42,6 +42,6 @@ export function TableHeaderCell({
       {onResizeStart && <span className="poc-thead__resizer" onPointerDown={onResizeStart} aria-hidden="true" />}
     </th>
   );
-}
+});
 
 export default TableHeaderCell;
