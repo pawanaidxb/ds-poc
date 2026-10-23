@@ -14,6 +14,7 @@ import "./Input.css";
  * Helper text (text)    ->  helperText
  * Show label (boolean)  ->  showLabel
  * Show helper (boolean) ->  showHelper
+ * (code only) width     ->  width, e.g. 280 or "100%"
  */
 export function Input({
   size = "small",
@@ -26,6 +27,7 @@ export function Input({
   error = false,
   disabled = false,
   id,
+  width,
   ...rest
 }) {
   const autoId = useId();
@@ -34,7 +36,7 @@ export function Input({
   const message = error ? errorMessage : helperText;
 
   return (
-    <div className={`poc-input poc-input--${size}${error ? " is-error" : ""}${disabled ? " is-disabled" : ""}`}>
+    <div className={`poc-input poc-input--${size}${error ? " is-error" : ""}${disabled ? " is-disabled" : ""}`} style={width ? { width } : undefined}>
       {showLabel && (
         <label className="poc-input__label" htmlFor={inputId}>
           {label}

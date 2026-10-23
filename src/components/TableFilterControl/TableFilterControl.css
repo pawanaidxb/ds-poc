@@ -1,0 +1,13 @@
+.poc-tfctl { position: relative; display: flex; width: 100%; }
+.poc-tfctl__select {
+  appearance: none; width: 100%; box-sizing: border-box;
+  height: 37px; padding: 0 calc(var(--spacing-10, 10px) + 18px) 0 var(--spacing-10, 10px); /* Figma 10: no token yet */
+  background: var(--color-surface); color: var(--color-text);
+  border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+  font-family: "Inter", system-ui, sans-serif; font-size: 12px; line-height: 15px;
+  cursor: pointer;
+}
+.poc-tfctl__select:focus { outline: none; border-color: var(--color-primary); }
+.poc-tfctl__chev { position: absolute; right: var(--spacing-10, 10px); top: 50%; transform: translateY(-50%); color: var(--color-text-muted); pointer-events: none; }
+.poc-tfctl.is-disabled { opacity: 0.4; }
+.poc-tfctl.is-disabled .poc-tfctl__select { cursor: not-allowed; }

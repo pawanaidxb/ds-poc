@@ -1,0 +1,7 @@
+.poc-tbulk { display: inline-flex; align-items: center; gap: var(--spacing-sm); font-family: "Inter", system-ui, sans-serif; }
+.poc-tbulk .poc-tcheck__box { border-color: var(--color-primary); }
+.poc-tbulk__count { font-size: 12px; line-height: 15px; font-weight: 600; color: var(--color-primary); }
+.poc-tbulk__clear { padding: 0; background: none; border: 0; font: inherit; font-size: 12px; line-height: 15px; color: var(--color-text-muted); cursor: pointer; }
+.poc-tbulk__clear:hover:not(:disabled) { text-decoration: underline; }
+.poc-tbulk__clear:focus-visible { outline: 1px solid var(--color-primary); outline-offset: 2px; }
+.poc-tbulk.is-disabled { opacity: 0.4; }

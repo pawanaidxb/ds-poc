@@ -9,3 +9,17 @@ export { TableSelectionCell } from "./components/TableSelectionCell/TableSelecti
 export { TableCell } from "./components/TableCell/TableCell";
 export { TableHeaderCell } from "./components/TableHeaderCell/TableHeaderCell";
 export { TableRow } from "./components/TableRow/TableRow";
+export { TableFilterChip } from "./components/TableFilterChip/TableFilterChip";
+export { TableFilterControl } from "./components/TableFilterControl/TableFilterControl";
+export { TableFilterLogic } from "./components/TableFilterLogic/TableFilterLogic";
+export { TableFilterRule } from "./components/TableFilterRule/TableFilterRule";
+export { TableMenuOption } from "./components/TableMenuOption/TableMenuOption";
+export { TableColumnMenu } from "./components/TableColumnMenu/TableColumnMenu";
+export { TableColumnGroup } from "./components/TableColumnGroup/TableColumnGroup";
+export { TableGroupRow } from "./components/TableGroupRow/TableGroupRow";
+export { TablePagination } from "./components/TablePagination/TablePagination";
+export { TableToolbar } from "./components/TableToolbar/TableToolbar";
+export { TableBulkSelectionBar } from "./components/TableBulkSelectionBar/TableBulkSelectionBar";
+export { TableDropIndicator } from "./components/TableDropIndicator/TableDropIndicator";
+export { TableDragPreview } from "./components/TableDragPreview/TableDragPreview";
+export { TableAdvancedFilterPanel } from "./components/TableAdvancedFilterPanel/TableAdvancedFilterPanel";

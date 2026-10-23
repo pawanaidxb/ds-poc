@@ -1,0 +1,15 @@
+.poc-tgrow > td { padding: 0; background: var(--color-surface-sunken); border-bottom: 1px solid var(--color-border); }
+.poc-tgrow__inner {
+  display: flex; align-items: center; gap: var(--spacing-10, 10px); width: 100%; box-sizing: border-box;
+  height: 36px; padding: 0 var(--spacing-14, 14px); /* Figma 10/14: no tokens yet */
+  background: none; border: 0; cursor: pointer; text-align: left;
+  font-family: "Inter", system-ui, sans-serif; font-size: 12px; line-height: 15px;
+}
+.poc-tgrow__inner:focus-visible { outline: 1px solid var(--color-primary); outline-offset: -1px; }
+.poc-tgrow__chev { color: var(--color-text-muted); transition: transform 0.15s; flex: none; }
+.poc-tgrow__chev.is-collapsed { transform: rotate(-90deg); }
+.poc-tgrow__name { font-weight: 600; color: var(--color-text); }
+.poc-tgrow__count { color: var(--color-text-muted); }
+.poc-tgrow__totals { margin-left: auto; display: flex; gap: var(--spacing-ml); font-size: 11px; line-height: 13px; font-variant-numeric: tabular-nums; }
+.poc-tgrow__seats { color: var(--color-icon); }
+.poc-tgrow__arr { font-weight: 600; color: var(--color-text); }

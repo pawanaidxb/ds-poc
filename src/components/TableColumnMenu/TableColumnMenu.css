@@ -1,0 +1,15 @@
+.poc-tcmenu {
+  width: 284px; box-sizing: border-box;
+  display: flex; flex-direction: column; gap: var(--spacing-10, 10px);
+  padding: var(--spacing-ms);
+  background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md);
+  box-shadow: var(--shadow-popover, 0 8px 24px rgba(24, 34, 48, 0.09)); /* no Figma effect style yet */
+  font-family: "Inter", system-ui, sans-serif;
+}
+.poc-tcmenu__head { display: flex; align-items: center; justify-content: space-between; }
+.poc-tcmenu__title { font-size: 12px; line-height: 15px; font-weight: 600; color: var(--color-text); }
+.poc-tcmenu__x { display: inline-grid; place-items: center; padding: 0; background: none; border: 0; color: var(--color-text-muted); cursor: pointer; }
+.poc-tcmenu__note { margin: 0; font-size: 11px; line-height: 13px; color: var(--color-text-muted); }
+.poc-tcmenu__body { display: flex; flex-direction: column; gap: var(--spacing-xs); }
+.poc-tcmenu__divider { width: 100%; margin: 0; border: 0; border-top: 1px solid var(--color-border); }
+.poc-tcmenu__foot { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-sm); font-size: 11px; color: var(--color-text-muted); }

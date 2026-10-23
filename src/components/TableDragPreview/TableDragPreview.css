@@ -1,0 +1,8 @@
+.poc-tdprev {
+  background: var(--color-surface);
+  outline: 1px solid var(--color-primary); outline-offset: -1px;
+  box-shadow: var(--shadow-drag, 0 6px 16px rgba(0, 0, 0, 0.14)); /* no Figma effect style yet */
+  pointer-events: none;
+}
+.poc-tdprev__table { border-collapse: collapse; width: 100%; }
+.poc-tdprev .poc-tcell, .poc-tdprev .poc-trow { background: var(--color-primary-subtle); }

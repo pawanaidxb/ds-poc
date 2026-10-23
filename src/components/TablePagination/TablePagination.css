@@ -1,0 +1,19 @@
+.poc-tpage { display: inline-flex; align-items: center; gap: var(--spacing-14, 14px); font-family: "Inter", system-ui, sans-serif; }
+.poc-tpage__label { font-size: 12px; line-height: 15px; color: var(--color-text-muted); }
+.poc-tpage__size select {
+  appearance: none; height: 35px; padding: 0 calc(var(--spacing-md) + 6px) 0 var(--spacing-md);
+  background: var(--color-surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 14 14'%3E%3Cpath d='M3.5 5.25L7 8.75L10.5 5.25' stroke='%23737373' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 10px center;
+  border: 1px solid var(--color-border); border-radius: var(--radius-md);
+  font: 600 13px/1 "Urbanist", system-ui, sans-serif; color: var(--color-text); cursor: pointer;
+}
+.poc-tpage__size select:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 1px; }
+.poc-tpage__count { font-size: 11px; line-height: 13px; color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
+.poc-tpage__btn {
+  width: 30px; height: 30px; display: inline-grid; place-items: center; padding: 0;
+  background: transparent; border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+  color: var(--color-text-muted); cursor: pointer;
+}
+.poc-tpage__btn:hover:not(:disabled) { background: var(--color-surface-muted); }
+.poc-tpage__btn:focus-visible { outline: 1px solid var(--color-primary); outline-offset: 1px; }
+.poc-tpage__btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.poc-tpage__btn:first-of-type:disabled { border-color: transparent; }

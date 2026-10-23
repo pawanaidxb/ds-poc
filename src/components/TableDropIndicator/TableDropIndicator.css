@@ -1,0 +1,7 @@
+.poc-tdrop { display: block; position: relative; pointer-events: none; }
+.poc-tdrop::after { content: ""; position: absolute; background: var(--color-primary); }
+.poc-tdrop--row { height: 4px; width: 100%; }
+.poc-tdrop--row::after { left: 0; right: 0; top: 1px; height: 2px; }
+.poc-tdrop--column { width: 4px; height: 100%; }
+.poc-tdrop--column::after { top: 0; bottom: 0; left: 1px; width: 2px; }
+.poc-tdrop.is-inactive { opacity: 0.2; }

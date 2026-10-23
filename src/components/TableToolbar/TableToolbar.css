@@ -1,0 +1,10 @@
+.poc-ttool {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--spacing-sm);
+  padding: var(--spacing-14, 14px) var(--spacing-lg); /* Figma 14: no token yet */
+  background: var(--color-surface-muted);
+  border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);
+  font-family: "Inter", system-ui, sans-serif;
+}
+.poc-ttool__group { display: flex; align-items: center; gap: var(--spacing-sm); flex-wrap: wrap; }
+.poc-ttool__status { font-size: 11px; line-height: 13px; color: var(--color-text-muted); }
+.poc-ttool .poc-input__field { background: var(--color-surface); }

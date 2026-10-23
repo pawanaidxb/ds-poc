@@ -1,0 +1,13 @@
+.poc-tlogic {
+  display: inline-flex; align-items: center; gap: var(--spacing-3, 3px);
+  padding: var(--spacing-3, 3px); /* Figma 3: no token yet */
+  background: var(--color-surface-sunken); border-radius: var(--radius-sm);
+}
+.poc-tlogic__opt {
+  padding: var(--spacing-2xs, 6px) var(--spacing-ms);
+  background: transparent; border: 1px solid transparent; border-radius: var(--radius-xs);
+  font-family: "Inter", system-ui, sans-serif; font-size: 12px; line-height: 15px; font-weight: 400;
+  color: var(--color-text-muted); cursor: pointer;
+}
+.poc-tlogic__opt.is-on { background: var(--color-surface); border-color: var(--color-border); color: var(--color-primary); font-size: 11px; line-height: 13px; font-weight: 600; }
+.poc-tlogic__opt:focus-visible { outline: 1px solid var(--color-primary); outline-offset: 1px; }
