@@ -1,0 +1,9 @@
+.poc-trow { background: var(--color-surface); }
+.poc-trow > td, .poc-trow > th { border-bottom: 1px solid var(--color-border); }
+.poc-trow:hover { background: var(--color-surface-muted); }
+.poc-trow:hover > .poc-tcell { background: transparent; }
+.poc-trow.is-selected, .poc-trow.is-selected > .poc-tcell { background: var(--color-primary-subtle); }
+.poc-trow:focus-visible { outline: 1px solid var(--color-primary); outline-offset: -1px; }
+.poc-trow.is-dragging { background: var(--color-primary-subtle); outline: 1px solid var(--color-primary); outline-offset: -1px; }
+.poc-trow.is-drop-target { outline: 2px solid var(--color-primary); outline-offset: -2px; }
+.poc-trow.is-disabled { opacity: 0.4; }

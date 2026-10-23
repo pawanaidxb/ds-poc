@@ -1,0 +1,15 @@
+.poc-tcheck { position: relative; display: inline-flex; width: 16px; height: 16px; cursor: pointer; flex: none; }
+.poc-tcheck__input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: inherit; }
+.poc-tcheck__box {
+  width: 16px; height: 16px; box-sizing: border-box;
+  display: grid; place-items: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-xs);
+  color: var(--color-on-primary);
+}
+.poc-tcheck--checked .poc-tcheck__box { background: var(--color-primary); border-color: var(--color-primary); }
+.poc-tcheck--indeterminate .poc-tcheck__box { background: var(--color-primary); }
+.poc-tcheck__dash { width: 8px; height: 2px; background: var(--color-surface); }
+.poc-tcheck__input:focus-visible + .poc-tcheck__box { box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 20%, transparent); }
+.poc-tcheck.is-disabled { opacity: 0.35; cursor: not-allowed; }

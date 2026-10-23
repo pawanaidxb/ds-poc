@@ -1,0 +1,7 @@
+.poc-tsel { width: 44px; height: 44px; padding: 0; box-sizing: border-box; }
+.poc-tsel__inner {
+  display: flex; align-items: center; gap: var(--spacing-xs);
+  padding-left: var(--spacing-2xs, 6px); /* Figma uses 6; no token yet */
+  height: 100%;
+}
+.poc-tsel .poc-tdrag { width: 12px; }
