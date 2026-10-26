@@ -5,7 +5,7 @@ This repo is a practice design system. Figma is the source of truth.
 ## Where things are
 
 - `tokens.json`: design tokens pushed from Figma by Tokens Studio. Never edit by hand.
-- `src/styles/tokens.css` and `design-system.md`: generated from `tokens.json`. Never edit by hand.
+- `src/styles/tokens.css` and `design-system.md`: generated from `tokens.json` and the component code. Never edit by hand.
 - `figma/variables.json`: Figma variable ID to CSS variable name.
 - `figma/components/<Name>.json` and `.png`: snapshot of each published Figma component (made by `scripts/fetch-figma-components.mjs`).
 - `src/components/<Name>/`: one folder per component.

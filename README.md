@@ -9,7 +9,7 @@ and Figma Code Connect before using them on the real design system.
 | --- | --- |
 | `tokens.json` | The design tokens. Tokens Studio overwrites this from Figma. |
 | `src/styles/tokens.css` | Generated. CSS variables the components use. Do not edit. |
-| `design-system.md` | Generated. Readable list of every token. Do not edit. |
+| `design-system.md` | Generated. Every token and every component (props, options, examples). Give this file to any AI tool to build UI with the system. Do not edit. |
 | `src/components/Button/Button.jsx` | The Button component (matches Figma "Button"). |
 | `src/components/Card/Card.jsx` | The Card component (matches Figma "Card"). |
 | `src/components/Input/Input.jsx` | The Input component (matches Figma "Input"). |
