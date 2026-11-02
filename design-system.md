@@ -2,7 +2,7 @@
 
 Generated from the code and `tokens.json` on every push. Do not edit by hand: change Figma or the components, then push.
 
-- 24 tokens (Light and Dark) · 24 components · package `ds-poc`
+- 24 tokens (Light and Dark) · 25 components · package `ds-poc`
 - Live examples: Storybook (Components and Table sections)
 
 ## How to build UI with this design system (read first, AI tools included)
@@ -69,6 +69,7 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 | [`Button`](#button) | Button | Core |
 | [`Card`](#card) | Card | Core |
 | [`Input`](#input) | Input | Core |
+| [`Checkbox`](#checkbox) | Checkbox | Core |
 | [`TableCheckbox`](#tablecheckbox) | Table / Checkbox | Table |
 | [`TableDragHandle`](#tabledraghandle) | Table / Drag handle | Table |
 | [`TableSelectionCell`](#tableselectioncell) | Table / Selection cell | Table |
@@ -177,6 +178,33 @@ Figma to code:
 
 ```jsx
 <Input size="small" />
+```
+
+#### Checkbox
+
+Matches the "Checkbox" component set in Figma (node 80:4312).
+
+- Import: `import { Checkbox } from "ds-poc";` (file `src/components/Checkbox/Checkbox.jsx`)
+- Storybook stories: Default, Filled, Disabled, AllStates
+- Tokens used: `--color-primary` `--radius-sm` `--color-surface` `--color-primary-hover`
+
+| Prop | Default | Options |
+| --- | --- | --- |
+| `checked` | — |  |
+| `defaultChecked` | `false` | `true` · `false` |
+| `disabled` | `false` | `true` · `false` |
+| `label` | `"Checkbox"` |  |
+| `onChange` | — | function |
+
+Figma to code:
+
+- Figma property "Property 1" (Default / Filled) -> checked (false / true)
+- Hover / Focus -> real browser states, no prop needed
+- No text in Figma -> label is read by screen readers only
+- Works controlled (checked + onChange) or on its own (defaultChecked)
+
+```jsx
+<Checkbox checked={false} />
 ```
 
 ### Table components

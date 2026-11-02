@@ -3,6 +3,7 @@ import "./styles/tokens.css";
 export { Button } from "./components/Button/Button";
 export { Card } from "./components/Card/Card";
 export { Input } from "./components/Input/Input";
+export { Checkbox } from "./components/Checkbox/Checkbox";
 export { TableCheckbox } from "./components/TableCheckbox/TableCheckbox";
 export { TableDragHandle } from "./components/TableDragHandle/TableDragHandle";
 export { TableSelectionCell } from "./components/TableSelectionCell/TableSelectionCell";
