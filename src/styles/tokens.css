@@ -1,8 +1,8 @@
 /* Generated from tokens.json by scripts/build-tokens.mjs. Do not edit by hand. */
 
 :root {
-  --color-primary: #e60053;
-  --color-primary-hover: #c90049;
+  --color-primary: #70c600;
+  --color-primary-hover: #87ca68;
   --color-on-primary: #ffffff;
   --color-text: #171717;
   --color-text-muted: #737373;
@@ -14,6 +14,8 @@
   --color-primary-subtle: #fff0f5;
   --color-surface-muted: #f8f9fb;
   --color-surface-sunken: #f3f4f6;
+  --color-info: #2e6feb;
+  --color-success: #1e9e55;
   --spacing-sm: 8px;
   --spacing-md: 16px;
   --spacing-lg: 24px;
@@ -26,8 +28,8 @@
 }
 
 [data-theme="dark"] {
-  --color-primary: #ff94bb;
-  --color-primary-hover: #ff76a7;
+  --color-primary: #d2ffcf;
+  --color-primary-hover: #cee5a6;
   --color-on-primary: #000000;
   --color-text: #ebebeb;
   --color-text-muted: #c6c6c6;
@@ -39,6 +41,8 @@
   --color-primary-subtle: #3a0d1f;
   --color-surface-muted: #121212;
   --color-surface-sunken: #1a1a1a;
+  --color-info: #6fa8ff;
+  --color-success: #4ade80;
   --spacing-sm: 8px;
   --spacing-md: 16px;
   --spacing-lg: 24px;

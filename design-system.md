@@ -2,7 +2,7 @@
 
 Generated from the code and `tokens.json` on every push. Do not edit by hand: change Figma or the components, then push.
 
-- 22 tokens (Light and Dark) · 24 components · package `ds-poc`
+- 24 tokens (Light and Dark) · 24 components · package `ds-poc`
 - Live examples: Storybook (Components and Table sections)
 
 ## How to build UI with this design system (read first, AI tools included)
@@ -19,15 +19,15 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 ## Tokens
 
 - Token sets: `POC Tokens/Light`, `POC Tokens/Dark`
-- Total tokens: 22
+- Total tokens: 24
 - Use in code: `var(--name)`, e.g. `color: var(--color-primary);`
 
 ### color
 
 | Token | CSS variable | Light | Dark | Type |
 | --- | --- | --- | --- | --- |
-| `color.primary` | `--color-primary` | #e60053 | #ff94bb | color |
-| `color.primary-hover` | `--color-primary-hover` | #c90049 | #ff76a7 | color |
+| `color.primary` | `--color-primary` | #70c600 | #d2ffcf | color |
+| `color.primary-hover` | `--color-primary-hover` | #87ca68 | #cee5a6 | color |
 | `color.on-primary` | `--color-on-primary` | #ffffff | #000000 | color |
 | `color.text` | `--color-text` | #171717 | #ebebeb | color |
 | `color.text-muted` | `--color-text-muted` | #737373 | #c6c6c6 | color |
@@ -39,6 +39,8 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 | `color.primary-subtle` | `--color-primary-subtle` | #fff0f5 | #3a0d1f | color |
 | `color.surface-muted` | `--color-surface-muted` | #f8f9fb | #121212 | color |
 | `color.surface-sunken` | `--color-surface-sunken` | #f3f4f6 | #1a1a1a | color |
+| `color.info` | `--color-info` | #2e6feb | #6fa8ff | color |
+| `color.success` | `--color-success` | #1e9e55 | #4ade80 | color |
 
 ### spacing
 
