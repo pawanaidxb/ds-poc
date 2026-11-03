@@ -1,31 +1,42 @@
-# Runs every time something is saved to the main branch
-# (for example, when Tokens Studio pushes tokens.json from Figma).
-#  1. Builds src/styles/tokens.css and design-system.md from tokens.json
-#  2. Saves those two files back into the repo if they changed
-#  3. Builds Storybook and publishes it as the live Storybook (gh-pages branch, site root)
-# Afterwards it brings the test branch up to date with main.
-# Previews of other branches are published by preview.yml under /preview/<branch>/.
+# Two branches only:
+#   main = live      test = try changes first
+#
+# Runs every time something is saved to main or test (for example a Tokens Studio push).
+#  1. On main: builds src/styles/tokens.css and design-system.md and saves them if they changed,
+#     then brings test up to date with main.
+#  2. Builds two Storybooks and publishes both to GitHub Pages:
+#       main -> https://<user>.github.io/<repo>/                (live)
+#       test -> https://<user>.github.io/<repo>/preview/test/   (preview)
+#  3. On test: opens a pull request "test -> main" with the preview link (or comments on it).
+# Merging that pull request is what makes the change live.
 name: Sync tokens and publish Storybook
 
 on:
   push:
-    branches: [main]
+    branches: [main, test]
   workflow_dispatch: {}
 
 permissions:
   contents: write
+  pull-requests: write
+  pages: write
+  id-token: write
 
 concurrency:
-  group: sync
+  group: publish
   cancel-in-progress: true
 
 jobs:
-  sync:
+  publish:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - name: Get the repo
         uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
 
       - name: Set up Node
@@ -33,12 +44,12 @@ jobs:
         with:
           node-version: 20
 
-      - name: Build tokens.css and design-system.md
+      - name: Build tokens.css and design-system.md (main)
         run: |
           node scripts/build-tokens.mjs
           node scripts/build-components-md.mjs
 
-      - name: Save the generated files back to the repo
+      - name: Save the generated files back to main
         run: |
           git config user.name "token-bot"
           git config user.email "token-bot@users.noreply.github.com"
@@ -47,25 +58,71 @@ jobs:
             echo "No token changes to save."
           else
             git commit -m "Update generated tokens [skip ci]"
-            git push
+            git push origin HEAD:main
           fi
 
-      - name: Install Storybook
-        run: npm install --no-audit --no-fund
-
-      - name: Build Storybook
-        run: npm run build-storybook
-
-      - name: Publish the live Storybook
-        run: bash scripts/publish-pages.sh .
-
-      - name: Bring the test branch up to date with main
+      - name: Bring test up to date with main
+        if: github.ref_name == 'main'
         run: |
           git fetch -q origin test || { echo "No test branch yet."; exit 0; }
           git checkout -q -B test origin/test
-          if git merge -q --no-edit origin/main; then
-            git push -q origin test && echo "test branch now includes everything in main."
+          if git merge -q --no-edit main; then
+            git push -q origin test && echo "test now includes everything in main."
           else
             git merge --abort
             echo "::warning::test has changes that clash with main. Open the test pull request and click 'Update branch'."
           fi
+          git checkout -q main
+
+      - name: Build the live Storybook (main)
+        run: |
+          npm install --no-audit --no-fund
+          npm run build-storybook
+          mkdir -p site && cp -R storybook-static/. site/
+
+      - name: Build the preview Storybook (test)
+        run: |
+          git fetch -q origin test || { echo "No test branch yet."; exit 0; }
+          git worktree add -q ../test-branch origin/test
+          cd ../test-branch
+          node scripts/build-tokens.mjs
+          node scripts/build-components-md.mjs
+          npm install --no-audit --no-fund
+          npm run build-storybook
+          mkdir -p "$GITHUB_WORKSPACE/site/preview/test"
+          cp -R storybook-static/. "$GITHUB_WORKSPACE/site/preview/test/"
+
+      - name: Prepare GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload both Storybooks
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Publish
+        id: deploy
+        uses: actions/deploy-pages@v4
+
+      - name: Open or update the test -> main pull request
+        if: github.ref_name == 'test'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          URL: ${{ steps.deploy.outputs.page_url }}preview/test/
+        run: |
+          AHEAD=$(git rev-list --count origin/main..origin/test)
+          if [ "$AHEAD" = "0" ]; then echo "test has nothing new. No pull request needed."; exit 0; fi
+          PR=$(gh pr list --head test --base main --state open --json number -q '.[0].number')
+          if [ -z "$PR" ]; then
+            printf '%s\n' \
+              "**Preview Storybook:** $URL" \
+              "" \
+              "Nothing is live yet. Check the preview (use the Light/Dark toolbar too)." \
+              "- Looks right: click **Merge pull request**. Do not delete the test branch." \
+              "- Needs changes: push again to test. The preview updates." > pr-body.md
+            gh pr create --base main --head test --title "Preview: test" --body-file pr-body.md
+          else
+            gh pr comment "$PR" --body "Preview updated ($(git rev-parse --short origin/test)): $URL"
+          fi
+          echo "### Preview: $URL" >> "$GITHUB_STEP_SUMMARY"

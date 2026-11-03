@@ -33,7 +33,7 @@ Two branches: **test** (try things) and **main** (live). Main only changes when 
 
 1. Push changes to **test**, not main.
    - Tokens Studio: Settings → Sync providers → GitHub → Edit → Branch: `test`.
-2. In about 2 minutes a pull request "Preview: test" opens with the link: `https://pawanaidxb.github.io/ds-poc/preview/test/`
+2. In about 3 minutes a pull request "Preview: test" opens with the link: `https://pawanaidxb.github.io/ds-poc/preview/test/`
 3. Check the preview, in Light and Dark. Push again to fix things; the preview updates.
 4. Happy? Click **Merge pull request** (do not click "Delete branch"). The repo, the live Storybook and `design-system.md` update.
 5. The test branch then refreshes itself from main, ready for the next change.

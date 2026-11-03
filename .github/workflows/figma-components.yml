@@ -1,4 +1,5 @@
-# Builds component code from Figma with Claude and opens a pull request.
+# Builds component code from Figma with Claude and saves it to the test branch.
+# The sync workflow then builds the preview and opens the test -> main pull request.
 # Starts when:
 #   - the Figma library is published (a relay sends "figma-library-publish"), or
 #   - you click "Run workflow" on the Actions tab.
@@ -33,8 +34,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Get the repo
+      - name: Get the repo (test branch)
         uses: actions/checkout@v4
+        with:
+          ref: test
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -69,7 +72,7 @@ jobs:
                  (variants, properties, states, token bindings, sizes). Leave matching components untouched.
             Then write a short summary to pr-body.md (not inside src/) with three headings:
               "Created", "Updated", "Design gaps" (raw values with no Figma variable, naming problems, anything unclear).
-            Do not commit or push; the next step opens the pull request.
+            Do not commit or push; the next step saves the code to the test branch.
 
       - name: Show Claude's message if it failed
         if: failure() && steps.claude.outputs.execution_file != ''
@@ -85,22 +88,16 @@ jobs:
       - name: Make sure the PR has a description
         run: test -f pr-body.md || echo "Components updated from Figma." > pr-body.md
 
-      - name: Open a pull request
-        id: cpr
-        uses: peter-evans/create-pull-request@v7
-        with:
-          branch: figma/component-updates
-          delete-branch: true
-          commit-message: "Update components from Figma"
-          title: "Components from Figma: ${{ env.ONLY || 'all' }}"
-          body-path: pr-body.md
-          add-paths: |
-            src/**
-            figma/**
-            README.md
+      - name: Save the new code to the test branch
+        run: |
+          git config user.name "figma-bot"
+          git config user.email "figma-bot@users.noreply.github.com"
+          git add src figma README.md
+          if git diff --cached --quiet; then echo "No component changes."; exit 0; fi
+          git commit -q -F pr-body.md
+          git push -q origin HEAD:test
 
-      - name: Build the preview Storybook for the pull request
-        if: steps.cpr.outputs.pull-request-number != ''
+      - name: Build the preview and open the pull request
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run preview.yml --ref figma/component-updates
+        run: gh workflow run sync.yml --ref test
