@@ -12,7 +12,8 @@ the preview Storybook builds, and the "Preview: test" pull request opens. Nothin
 ## Use
 1. **Publish the library first** (the build reads published components).
 2. Select a component, an instance, or the frame around a component set.
-3. Click **Send to code**. Or **Send all published components**.
-4. In about 5 minutes check the preview: https://pawanaidxb.github.io/ds-poc/preview/test/ and merge the pull request when it is right.
+3. Pick the branch (default **test** = preview first; **main** = live straight away, asks you to confirm).
+4. Click **Send to code**. Or **Send all published components**.
+5. In about 5 minutes check the preview: https://pawanaidxb.github.io/ds-poc/preview/test/ and merge the pull request when it is right.
 
 The AI build needs a working AI key (repo secret `ANTHROPIC_API_KEY`, or the company gateway).

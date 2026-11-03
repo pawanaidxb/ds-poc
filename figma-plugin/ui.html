@@ -17,6 +17,8 @@
   .ok { color: var(--figma-color-text-success); }
   .err { color: var(--figma-color-text-danger); }
   details { margin: 0 0 12px; }
+  select { width: 100%; height: 32px; padding: 0 8px; margin: 0 0 8px; border: 1px solid var(--figma-color-border); border-radius: 6px; background: var(--figma-color-bg); color: var(--figma-color-text); font: inherit; }
+  .warn { color: var(--figma-color-text-warning); }
   .target { margin: 0 0 12px; padding: 8px; border-radius: 6px; background: var(--figma-color-bg-secondary); }
   summary { cursor: pointer; font-weight: 500; margin-bottom: 8px; }
 </style>
@@ -24,7 +26,9 @@
 <h1>Send to code</h1>
 <p>Select components, then send. Code goes to the <b>test</b> branch with a preview. Nothing goes live until you merge.</p>
 
-<div class="target">Sends to branch: <b>test</b> (preview). Main changes only when you merge.</div>
+<label for="branch">Send to branch</label>
+<select id="branch"><option value="test">test</option></select>
+<div class="target" id="hint"></div>
 
 <label>Selected components</label>
 <div class="box" id="names"><span class="empty">Select a component, an instance or a frame of components.</span></div>
@@ -44,6 +48,7 @@
 <script>
   const $ = (id) => document.getElementById(id);
   let names = [];
+  let armed = false;
   const post = (m) => parent.postMessage({ pluginMessage: m }, "*");
 
   function render() {
@@ -54,25 +59,56 @@
     $("send").textContent = names.length > 1 ? `Send ${names.length} components to code` : "Send to code";
   }
 
-  function save() { post({ type: "save-settings", settings: { token: $("token").value.trim(), repo: $("repo").value.trim() } }); }
-  $("token").addEventListener("change", save);
-  $("repo").addEventListener("change", save);
+  const HINTS = {
+    test: "Preview first: code goes to <b>test</b>, the preview Storybook updates and the pull request waits for your merge.",
+    main: '<span class="warn"><b>Goes live straight away.</b> No preview and no review. Fails if main is locked.</span>',
+  };
+  function hint() {
+    const b = $("branch").value;
+    $("hint").innerHTML = HINTS[b] || `Code goes to <b>${b.replace(/[<>&]/g, "")}</b>. No preview Storybook for this branch.`;
+  }
+  function save() { post({ type: "save-settings", settings: { token: $("token").value.trim(), repo: $("repo").value.trim(), branch: $("branch").value } }); }
+  async function loadBranches(keep) {
+    const token = $("token").value.trim(), repo = $("repo").value.trim();
+    if (!token) return hint();
+    try {
+      const res = await fetch(`https://api.github.com/repos/${repo}/branches?per_page=100`, { headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" } });
+      if (!res.ok) return hint();
+      const names = (await res.json()).map((b) => b.name).sort((a, b) => (a === "test" ? -1 : b === "test" ? 1 : a === "main" ? -1 : b === "main" ? 1 : a.localeCompare(b)));
+      const pick = names.includes(keep) ? keep : names.includes("test") ? "test" : names[0];
+      $("branch").innerHTML = names.map((n) => `<option value="${n.replace(/["<>&]/g, "")}">${n.replace(/[<>&]/g, "")}${n === "main" ? " (live)" : n === "test" ? " (preview)" : ""}</option>`).join("");
+      $("branch").value = pick;
+    } catch (e) {}
+    hint();
+  }
+  $("token").addEventListener("change", () => { save(); loadBranches($("branch").value); });
+  $("repo").addEventListener("change", () => { save(); loadBranches($("branch").value); });
+  $("branch").addEventListener("change", () => { hint(); save(); });
 
   async function send(list) {
     const token = $("token").value.trim();
     const repo = $("repo").value.trim();
+    const branch = $("branch").value || "test";
+    if (branch === "main" && !armed) {
+      armed = true;
+      $("status").className = "status err";
+      $("status").textContent = "Main goes live with no preview. Click Send again to confirm.";
+      setTimeout(() => { armed = false; }, 8000);
+      return;
+    }
+    armed = false;
     if (!token) { $("setup").open = true; $("status").className = "status err"; $("status").textContent = "Add your GitHub token in Settings first."; return; }
     $("status").className = "status"; $("status").textContent = "Sending…";
     try {
       const res = await fetch(`https://api.github.com/repos/${repo}/dispatches`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", "Content-Type": "application/json" },
-        body: JSON.stringify({ event_type: "figma-library-publish", client_payload: { components: list.join(","), branch: "test", source: "figma-plugin" } }),
+        body: JSON.stringify({ event_type: "figma-library-publish", client_payload: { components: list.join(","), branch, source: "figma-plugin" } }),
       });
       if (res.status === 204) {
         $("status").className = "status ok";
-        $("status").innerHTML = `Sent ${list.length ? list.join(", ") : "all components"} to <b>test</b>. In about 5 minutes the "Preview: test" pull request shows the result. <a href="https://github.com/${repo}/actions" target="_blank">Watch the build</a>`;
-        post({ type: "notify", text: "Sent to code. Check the test preview in a few minutes." });
+        $("status").innerHTML = `Sent ${list.length ? list.join(", ") : "all components"} to <b>${branch.replace(/[<>&]/g, "")}</b>. ${branch === "test" ? 'In about 5 minutes the "Preview: test" pull request shows the result.' : ""} <a href="https://github.com/${repo}/actions" target="_blank">Watch the build</a>`;
+        post({ type: "notify", text: `Sent to code (${branch}).` });
       } else {
         const t = res.status === 401 ? "The token is wrong or expired." : res.status === 404 ? "Repository not found, or the token has no access to it." : res.status === 403 ? "The token needs Contents: Read and write." : `GitHub said ${res.status}.`;
         $("status").className = "status err"; $("status").textContent = t;
@@ -92,6 +128,7 @@
       if (m.settings.token) $("token").value = m.settings.token;
       if (m.settings.repo) $("repo").value = m.settings.repo;
       if (!m.settings.token) $("setup").open = true;
+      loadBranches(m.settings.branch || "test");
     }
   };
   post({ type: "ready" });
