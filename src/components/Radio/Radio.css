@@ -1,0 +1,20 @@
+/* Radio — Figma "Radio" (103:4322): 61 x 61 circle, 5px inside stroke, 39 x 39 dot when checked. */
+.poc-radio { position: relative; display: inline-flex; flex: none; cursor: pointer; }
+.poc-radio__input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: inherit; }
+.poc-radio__circle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 61px; height: 61px; box-sizing: border-box;
+  border: 5px solid var(--color-icon);
+  border-radius: var(--radius-full, 50%);
+  background: var(--color-surface);
+}
+.poc-radio__dot {
+  width: 39px; height: 39px;
+  border-radius: var(--radius-full, 50%);
+  background: var(--color-icon);
+  transform: scale(0);
+  transition: transform 120ms ease;
+}
+.poc-radio__input:checked + .poc-radio__circle .poc-radio__dot { transform: scale(1); }
+.poc-radio__input:focus-visible + .poc-radio__circle { box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-icon) 30%, transparent); }
+.poc-radio.is-disabled { opacity: 0.35; cursor: not-allowed; }
