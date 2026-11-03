@@ -2,7 +2,7 @@
 
 Generated from the code and `tokens.json` on every push. Do not edit by hand: change Figma or the components, then push.
 
-- 24 tokens (Light and Dark) · 25 components · package `ds-poc`
+- 24 tokens (Light and Dark) · 26 components · package `ds-poc`
 - Live examples: Storybook (Components and Table sections)
 
 ## How to build UI with this design system (read first, AI tools included)
@@ -26,8 +26,8 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 
 | Token | CSS variable | Light | Dark | Type |
 | --- | --- | --- | --- | --- |
-| `color.primary` | `--color-primary` | #3200fb | #1a02cc | color |
-| `color.primary-hover` | `--color-primary-hover` | #000fe2 | #0b0aa9 | color |
+| `color.primary` | `--color-primary` | #a00010 | #d1cbff | color |
+| `color.primary-hover` | `--color-primary-hover` | #c9004d | #434386 | color |
 | `color.on-primary` | `--color-on-primary` | #ffffff | #000000 | color |
 | `color.text` | `--color-text` | #171717 | #ebebeb | color |
 | `color.text-muted` | `--color-text-muted` | #737373 | #c6c6c6 | color |
@@ -70,6 +70,7 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 | [`Card`](#card) | Card | Core |
 | [`Input`](#input) | Input | Core |
 | [`Checkbox`](#checkbox) | Checkbox | Core |
+| [`Radio`](#radio) | Radio | Core |
 | [`TableCheckbox`](#tablecheckbox) | Table / Checkbox | Table |
 | [`TableDragHandle`](#tabledraghandle) | Table / Drag handle | Table |
 | [`TableSelectionCell`](#tableselectioncell) | Table / Selection cell | Table |
@@ -99,8 +100,8 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 Matches the "Button" component in Figma.
 
 - Import: `import { Button } from "ds-poc";` (file `src/components/Button/Button.jsx`)
-- Storybook stories: Primary, Secondary, Disabled
-- Tokens used: `--spacing-sm` `--spacing-md` `--radius-md` `--color-primary` `--color-on-primary` `--color-primary-hover` `--color-surface` `--color-text` `--color-border`
+- Storybook stories: Primary, Secondary, Disabled, AllStates
+- Tokens used: `--spacing-sm` `--spacing-md` `--radius-md` `--color-primary` `--color-on-primary` `--color-primary-hover` `--color-surface` `--color-text` `--color-border` `--color-icon`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -111,7 +112,9 @@ Matches the "Button" component in Figma.
 Figma to code:
 
 - Figma property "Type" (Primary / Secondary)  ->  prop "variant"
+- Figma property "Type" = Disabled             ->  prop "disabled" (true)
 - Figma property "Label" (text)                ->  prop "children"
+- Hover -> real browser state, no prop needed
 
 ```jsx
 <Button variant="primary">Book flight</Button>
@@ -205,6 +208,40 @@ Figma to code:
 
 ```jsx
 <Checkbox checked={false} />
+```
+
+#### Radio
+
+Matches the "Radio" component set in Figma (node 103:4322).
+
+- Import: `import { Radio } from "ds-poc";` (file `src/components/Radio/Radio.jsx`)
+- Storybook stories: Default, Selected, Disabled, FillDisabled, AllStates
+- Tokens used: `--color-icon` `--radius-full` `--color-surface` `--color-border-strong`
+
+| Prop | Default | Options |
+| --- | --- | --- |
+| `checked` | — |  |
+| `defaultChecked` | — |  |
+| `disabled` | `false` | `true` · `false` |
+| `label` | `"Radio"` |  |
+| `name` | — |  |
+| `value` | — |  |
+| `onChange` | — | function |
+
+Figma to code:
+
+- Figma property                 ->  code prop
+- Property 1=Default             ->  checked = false
+- Property 1=Selected (dot)      ->  checked = true
+- Property 1=Disabled            ->  disabled = true, checked = false
+- Property 1=Fill Disabled       ->  disabled = true, checked = true
+- (no Hover / Focus in Figma)    ->  real browser :focus-visible ring
+- (code only) label              ->  label, read by screen readers only (no text in Figma)
+- (code only) name / value       ->  passed to the native radio so groups work
+- Works controlled (checked + onChange) or on its own (defaultChecked).
+
+```jsx
+<Radio checked={false} readOnly />
 ```
 
 ### Table components

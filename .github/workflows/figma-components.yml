@@ -1,4 +1,4 @@
-# Builds component code from Figma with Claude and saves it to the test branch.
+# Builds component code from Figma with Claude and saves it to the chosen branch (default: test).
 # The sync workflow then builds the preview and opens the test -> main pull request.
 # Starts when:
 #   - the Figma library is published (a relay sends "figma-library-publish"), or
@@ -11,6 +11,10 @@ on:
     types: [figma-library-publish]
   workflow_dispatch:
     inputs:
+      branch:
+        description: "Branch to write the code to (test = preview first)"
+        required: false
+        default: "test"
       components:
         description: "Component names, comma separated (empty = all published components)"
         required: false
@@ -27,6 +31,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
+  BRANCH: ${{ github.event.client_payload.branch || github.event.inputs.branch || 'test' }}
   FIGMA_FILE_KEY: eY0kt0YmL6kMwPKAOrVD30
   ONLY: ${{ github.event.inputs.components || github.event.client_payload.components || '' }}
 
@@ -34,10 +39,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Get the repo (test branch)
+      - name: Check the branch
+        run: |
+          if ! git ls-remote --exit-code --heads "https://github.com/$GITHUB_REPOSITORY.git" "$BRANCH" >/dev/null; then
+            echo "::error::Branch '$BRANCH' does not exist."; exit 1
+          fi
+          echo "Building on: $BRANCH"
+          if [ "$BRANCH" = "main" ]; then echo "::warning::Writing straight to main: no preview, goes live."; fi
+
+      - name: Get the repo (chosen branch)
         uses: actions/checkout@v4
         with:
-          ref: test
+          ref: ${{ env.BRANCH }}
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -88,16 +101,17 @@ jobs:
       - name: Make sure the PR has a description
         run: test -f pr-body.md || echo "Components updated from Figma." > pr-body.md
 
-      - name: Save the new code to the test branch
+      - name: Save the new code to the chosen branch
         run: |
           git config user.name "figma-bot"
           git config user.email "figma-bot@users.noreply.github.com"
           git add src figma README.md
           if git diff --cached --quiet; then echo "No component changes."; exit 0; fi
           git commit -q -F pr-body.md
-          git push -q origin HEAD:test
+          git push -q origin "HEAD:$BRANCH"
 
-      - name: Build the preview and open the pull request
+      - name: Rebuild Storybook (preview for test, live for main)
+        if: env.BRANCH == 'test' || env.BRANCH == 'main'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run sync.yml --ref test
+        run: gh workflow run sync.yml --ref "$BRANCH"

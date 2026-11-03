@@ -14,6 +14,7 @@ and Figma Code Connect before using them on the real design system.
 | `src/components/Card/Card.jsx` | The Card component (matches Figma "Card"). |
 | `src/components/Input/Input.jsx` | The Input component (matches Figma "Input"). |
 | `src/components/Checkbox/Checkbox.jsx` | The Checkbox component (matches Figma "Checkbox"). |
+| `src/components/Radio/Radio.jsx` | The Radio component (matches Figma "Radio"). |
 | `src/components/Table*/` | Table building blocks (match Figma "Table / ..."): Checkbox, Drag handle, Selection cell, Cell, Header cell, Row, Filter chip, Filter control, Filter logic, Filter rule, Menu option, Column menu, Column group, Group row, Pagination, Toolbar, Bulk selection bar, Drop indicator, Drag preview, Advanced filter panel. |
 | `src/components/DataTable/DataTable.jsx` | The full interactive Data table (matches Figma "Data table", all 10 states). |
 | `scripts/build-tokens.mjs` | Turns `tokens.json` into the two generated files. |

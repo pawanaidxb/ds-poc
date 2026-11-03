@@ -2,8 +2,8 @@
 #   main = live      test = try changes first
 #
 # Runs every time something is saved to main or test (for example a Tokens Studio push).
-#  1. On main: builds src/styles/tokens.css and design-system.md and saves them if they changed,
-#     then brings test up to date with main.
+#  1. On test: builds src/styles/tokens.css and design-system.md and saves them on test.
+#     On main: only reads; the automation never writes to main. After a merge it brings test up to date.
 #  2. Builds two Storybooks and publishes both to GitHub Pages:
 #       main -> https://<user>.github.io/<repo>/                (live)
 #       test -> https://<user>.github.io/<repo>/preview/test/   (preview)
@@ -39,6 +39,30 @@ jobs:
     if: github.ref_name == 'test'
     runs-on: ubuntu-latest
     steps:
+      - name: Get the test branch
+        uses: actions/checkout@v4
+        with:
+          ref: test
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build tokens.css and design-system.md and save them on test
+        run: |
+          node scripts/build-tokens.mjs
+          node scripts/build-components-md.mjs
+          git config user.name "token-bot"
+          git config user.email "token-bot@users.noreply.github.com"
+          git add src/styles/tokens.css design-system.md
+          if git diff --cached --quiet; then
+            echo "Generated files already up to date."
+          else
+            git commit -m "Update generated tokens"
+            git push origin HEAD:test
+          fi
+
       - name: Ask main to publish the preview
         env:
           GH_TOKEN: ${{ github.token }}
@@ -67,17 +91,15 @@ jobs:
           node scripts/build-tokens.mjs
           node scripts/build-components-md.mjs
 
-      - name: Save the generated files back to main
+      - name: Check the generated files (main is never written to by the bot)
         run: |
-          git config user.name "token-bot"
-          git config user.email "token-bot@users.noreply.github.com"
           git add src/styles/tokens.css design-system.md
           if git diff --cached --quiet; then
-            echo "No token changes to save."
+            echo "Generated files are up to date."
           else
-            git commit -m "Update generated tokens [skip ci]"
-            git push origin HEAD:main
+            echo "::warning::tokens.css or design-system.md on main is out of date. Push the change to test and merge it."
           fi
+          git reset -q
 
       - name: Bring test up to date with main
         if: github.event_name == 'push'
