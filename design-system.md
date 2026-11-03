@@ -26,8 +26,8 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 
 | Token | CSS variable | Light | Dark | Type |
 | --- | --- | --- | --- | --- |
-| `color.primary` | `--color-primary` | #70c600 | #d2ffcf | color |
-| `color.primary-hover` | `--color-primary-hover` | #87ca68 | #cee5a6 | color |
+| `color.primary` | `--color-primary` | #3200fb | #1a02cc | color |
+| `color.primary-hover` | `--color-primary-hover` | #000fe2 | #0b0aa9 | color |
 | `color.on-primary` | `--color-on-primary` | #ffffff | #000000 | color |
 | `color.text` | `--color-text` | #171717 | #ebebeb | color |
 | `color.text-muted` | `--color-text-muted` | #737373 | #c6c6c6 | color |

@@ -1,8 +1,8 @@
 /* Generated from tokens.json by scripts/build-tokens.mjs. Do not edit by hand. */
 
 :root {
-  --color-primary: #70c600;
-  --color-primary-hover: #87ca68;
+  --color-primary: #3200fb;
+  --color-primary-hover: #000fe2;
   --color-on-primary: #ffffff;
   --color-text: #171717;
   --color-text-muted: #737373;
@@ -28,8 +28,8 @@
 }
 
 [data-theme="dark"] {
-  --color-primary: #d2ffcf;
-  --color-primary-hover: #cee5a6;
+  --color-primary: #1a02cc;
+  --color-primary-hover: #0b0aa9;
   --color-on-primary: #000000;
   --color-text: #ebebeb;
   --color-text-muted: #c6c6c6;
