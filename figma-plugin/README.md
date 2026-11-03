@@ -6,7 +6,7 @@ the preview Storybook builds, and the "Preview: test" pull request opens. Nothin
 ## Install (once, Figma desktop app)
 1. Download this `figma-plugin` folder (or the zip) and unzip it.
 2. In Figma: **Plugins → Development → Import plugin from manifest…** and pick `manifest.json`.
-3. Run it: **Plugins → Development → Send to code**.
+3. Run it: **Plugins → Development → Send to code** (works in Design mode and in Dev Mode).
 4. Open **Settings** in the plugin, paste your GitHub token (the same one Tokens Studio uses), keep the repository `pawanaidxb/ds-poc`.
 
 ## Use
