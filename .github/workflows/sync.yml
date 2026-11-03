@@ -7,27 +7,45 @@
 #  2. Builds two Storybooks and publishes both to GitHub Pages:
 #       main -> https://<user>.github.io/<repo>/                (live)
 #       test -> https://<user>.github.io/<repo>/preview/test/   (preview)
-#  3. On test: opens a pull request "test -> main" with the preview link (or comments on it).
+#  3. When test has changes: opens a pull request "test -> main" with the preview link (or comments on it).
 # Merging that pull request is what makes the change live.
 name: Sync tokens and publish Storybook
 
 on:
   push:
     branches: [main, test]
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      from_test:
+        description: "Started by a push to test"
+        required: false
+        default: "false"
 
 permissions:
   contents: write
   pull-requests: write
   pages: write
   id-token: write
+  actions: write
 
 concurrency:
   group: publish
   cancel-in-progress: true
 
 jobs:
+  # GitHub Pages only accepts publishing from main, so a push to test
+  # asks main to rebuild both Storybooks (live + preview).
+  relay:
+    if: github.ref_name == 'test'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ask main to publish the preview
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run sync.yml --repo "$GITHUB_REPOSITORY" --ref main -f from_test=true
+
   publish:
+    if: github.ref_name == 'main'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -62,7 +80,7 @@ jobs:
           fi
 
       - name: Bring test up to date with main
-        if: github.ref_name == 'main'
+        if: github.event_name == 'push'
         run: |
           git fetch -q origin test || { echo "No test branch yet."; exit 0; }
           git checkout -q -B test origin/test
@@ -105,7 +123,6 @@ jobs:
         uses: actions/deploy-pages@v4
 
       - name: Open or update the test -> main pull request
-        if: github.ref_name == 'test'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
@@ -122,7 +139,7 @@ jobs:
               "- Looks right: click **Merge pull request**. Do not delete the test branch." \
               "- Needs changes: push again to test. The preview updates." > pr-body.md
             gh pr create --base main --head test --title "Preview: test" --body-file pr-body.md
-          else
+          elif [ "${{ github.event.inputs.from_test }}" = "true" ]; then
             gh pr comment "$PR" --body "Preview updated ($(git rev-parse --short origin/test)): $URL"
           fi
           echo "### Preview: $URL" >> "$GITHUB_STEP_SUMMARY"
