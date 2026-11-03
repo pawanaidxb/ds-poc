@@ -3,6 +3,7 @@
 #  1. Builds src/styles/tokens.css and design-system.md from tokens.json
 #  2. Saves those two files back into the repo if they changed
 #  3. Builds Storybook and publishes it as the live Storybook (gh-pages branch, site root)
+# Afterwards it brings the test branch up to date with main.
 # Previews of other branches are published by preview.yml under /preview/<branch>/.
 name: Sync tokens and publish Storybook
 
@@ -24,6 +25,8 @@ jobs:
     steps:
       - name: Get the repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -55,3 +58,14 @@ jobs:
 
       - name: Publish the live Storybook
         run: bash scripts/publish-pages.sh .
+
+      - name: Bring the test branch up to date with main
+        run: |
+          git fetch -q origin test || { echo "No test branch yet."; exit 0; }
+          git checkout -q -B test origin/test
+          if git merge -q --no-edit origin/main; then
+            git push -q origin test && echo "test branch now includes everything in main."
+          else
+            git merge --abort
+            echo "::warning::test has changes that clash with main. Open the test pull request and click 'Update branch'."
+          fi
