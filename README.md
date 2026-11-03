@@ -27,6 +27,20 @@ and Figma Code Connect before using them on the real design system.
 3. GitHub runs the automation (see the **Actions** tab).
 4. About 3 minutes later `tokens.css`, `design-system.md` and Storybook are updated.
 
+## Preview before going live
+
+Nothing has to go live straight away. Changes on any branch other than `main` get their own preview Storybook first.
+
+1. Save the change to a **new branch**, not `main`.
+   - Tokens Studio: when you push, type a new branch name (for example `tokens/new-green`).
+   - Components: the AI build already uses its own branch (`figma/component-updates`).
+2. In about 2 minutes a **pull request** opens on GitHub with the link: `https://pawanaidxb.github.io/ds-poc/preview/<branch-name>/`
+3. Check the preview, in Light and Dark.
+4. Happy? Click **Merge pull request**. The repo, the live Storybook and `design-system.md` update. The preview is deleted.
+   Not happy? Push a fix to the same branch (the preview updates), or click **Close pull request** (nothing changes).
+
+The live Storybook stays at `https://pawanaidxb.github.io/ds-poc/`.
+
 ## Rules
 
 - Change tokens only in Figma.

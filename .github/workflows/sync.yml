@@ -2,7 +2,8 @@
 # (for example, when Tokens Studio pushes tokens.json from Figma).
 #  1. Builds src/styles/tokens.css and design-system.md from tokens.json
 #  2. Saves those two files back into the repo if they changed
-#  3. Builds Storybook and publishes it to GitHub Pages
+#  3. Builds Storybook and publishes it as the live Storybook (gh-pages branch, site root)
+# Previews of other branches are published by preview.yml under /preview/<branch>/.
 name: Sync tokens and publish Storybook
 
 on:
@@ -12,8 +13,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
   group: sync
@@ -22,9 +21,6 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - name: Get the repo
         uses: actions/checkout@v4
@@ -57,14 +53,5 @@ jobs:
       - name: Build Storybook
         run: npm run build-storybook
 
-      - name: Prepare GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Storybook
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: storybook-static
-
-      - name: Publish Storybook
-        id: deploy
-        uses: actions/deploy-pages@v4
+      - name: Publish the live Storybook
+        run: bash scripts/publish-pages.sh .
