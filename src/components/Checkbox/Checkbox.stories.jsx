@@ -11,7 +11,7 @@ export default {
   },
 };
 
-export const Default = { args: { checked: false } };
+export const Default = { args: { checked: false, label: "Preview test" } };
 export const Filled = { args: { checked: true } };
 export const Disabled = { args: { checked: true, disabled: true } };
 
