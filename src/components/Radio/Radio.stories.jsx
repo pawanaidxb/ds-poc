@@ -14,8 +14,9 @@ export default {
 };
 
 export const Default = { args: { checked: false, readOnly: true } };
-export const Checked = { args: { checked: true, readOnly: true } };
-export const Disabled = { args: { checked: true, disabled: true, readOnly: true } };
+export const Selected = { args: { checked: true, readOnly: true } };
+export const Disabled = { args: { checked: false, disabled: true, readOnly: true } };
+export const FillDisabled = { args: { checked: true, disabled: true, readOnly: true } };
 
 export const AllStates = {
   render: () => (

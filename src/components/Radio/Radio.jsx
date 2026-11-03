@@ -6,9 +6,10 @@ import "./Radio.css";
  *
  * Figma property                 ->  code prop
  * Property 1=Default             ->  checked = false
- * Property 1=Variant2 (dot)      ->  checked = true
+ * Property 1=Selected (dot)      ->  checked = true
+ * Property 1=Disabled            ->  disabled = true, checked = false
+ * Property 1=Fill Disabled       ->  disabled = true, checked = true
  * (no Hover / Focus in Figma)    ->  real browser :focus-visible ring
- * (code only) disabled           ->  disabled (boolean)
  * (code only) label              ->  label, read by screen readers only (no text in Figma)
  * (code only) name / value       ->  passed to the native radio so groups work
  * Works controlled (checked + onChange) or on its own (defaultChecked).
