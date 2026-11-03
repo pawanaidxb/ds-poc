@@ -1,0 +1,95 @@
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 16px; font: 12px/1.45 Inter, -apple-system, "Segoe UI", sans-serif; color: var(--figma-color-text); background: var(--figma-color-bg); }
+  h1 { margin: 0 0 4px; font-size: 14px; font-weight: 600; }
+  p { margin: 0 0 12px; color: var(--figma-color-text-secondary); }
+  label { display: block; margin: 0 0 4px; font-weight: 500; }
+  input { width: 100%; height: 32px; padding: 0 8px; margin: 0 0 12px; border: 1px solid var(--figma-color-border); border-radius: 6px; background: var(--figma-color-bg); color: var(--figma-color-text); font: inherit; }
+  input:focus { outline: 2px solid var(--figma-color-border-brand-strong); outline-offset: -1px; }
+  .box { min-height: 64px; max-height: 120px; overflow: auto; padding: 8px; margin: 0 0 12px; border: 1px solid var(--figma-color-border); border-radius: 6px; }
+  .chip { display: inline-block; margin: 2px 4px 2px 0; padding: 2px 8px; border-radius: 999px; background: var(--figma-color-bg-brand-tertiary); color: var(--figma-color-text-brand); }
+  .empty { color: var(--figma-color-text-tertiary); }
+  button { width: 100%; height: 36px; border: 0; border-radius: 999px; font: inherit; font-weight: 600; cursor: pointer; }
+  .primary { background: var(--figma-color-bg-brand); color: var(--figma-color-text-onbrand); }
+  .primary:disabled { opacity: 0.4; cursor: not-allowed; }
+  .link { margin-top: 8px; background: transparent; color: var(--figma-color-text-brand); }
+  .status { margin-top: 12px; min-height: 18px; }
+  .ok { color: var(--figma-color-text-success); }
+  .err { color: var(--figma-color-text-danger); }
+  details { margin: 0 0 12px; }
+  summary { cursor: pointer; font-weight: 500; margin-bottom: 8px; }
+</style>
+
+<h1>Send to code</h1>
+<p>Select components, then send. Code goes to the <b>test</b> branch with a preview. Nothing goes live until you merge.</p>
+
+<label>Selected components</label>
+<div class="box" id="names"><span class="empty">Select a component, an instance or a frame of components.</span></div>
+
+<details id="setup">
+  <summary>Settings</summary>
+  <label for="token">GitHub token</label>
+  <input id="token" type="password" placeholder="github_pat_…" autocomplete="off">
+  <label for="repo">Repository</label>
+  <input id="repo" type="text" value="pawanaidxb/ds-poc">
+</details>
+
+<button class="primary" id="send" disabled>Send to code</button>
+<button class="link" id="all">Send all published components</button>
+<div class="status" id="status" role="status"></div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  let names = [];
+  const post = (m) => parent.postMessage({ pluginMessage: m }, "*");
+
+  function render() {
+    $("names").innerHTML = names.length
+      ? names.map((n) => `<span class="chip">${n.replace(/[<>&]/g, "")}</span>`).join("")
+      : '<span class="empty">Select a component, an instance or a frame of components.</span>';
+    $("send").disabled = !names.length;
+    $("send").textContent = names.length > 1 ? `Send ${names.length} components to code` : "Send to code";
+  }
+
+  function save() { post({ type: "save-settings", settings: { token: $("token").value.trim(), repo: $("repo").value.trim() } }); }
+  $("token").addEventListener("change", save);
+  $("repo").addEventListener("change", save);
+
+  async function send(list) {
+    const token = $("token").value.trim();
+    const repo = $("repo").value.trim();
+    if (!token) { $("setup").open = true; $("status").className = "status err"; $("status").textContent = "Add your GitHub token in Settings first."; return; }
+    $("status").className = "status"; $("status").textContent = "Sending…";
+    try {
+      const res = await fetch(`https://api.github.com/repos/${repo}/dispatches`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", "Content-Type": "application/json" },
+        body: JSON.stringify({ event_type: "figma-library-publish", client_payload: { components: list.join(","), source: "figma-plugin" } }),
+      });
+      if (res.status === 204) {
+        $("status").className = "status ok";
+        $("status").innerHTML = `Sent ${list.length ? list.join(", ") : "all components"}. In about 5 minutes the "Preview: test" pull request shows the result. <a href="https://github.com/${repo}/actions" target="_blank">Watch the build</a>`;
+        post({ type: "notify", text: "Sent to code. Check the test preview in a few minutes." });
+      } else {
+        const t = res.status === 401 ? "The token is wrong or expired." : res.status === 404 ? "Repository not found, or the token has no access to it." : res.status === 403 ? "The token needs Contents: Read and write." : `GitHub said ${res.status}.`;
+        $("status").className = "status err"; $("status").textContent = t;
+      }
+    } catch (e) {
+      $("status").className = "status err"; $("status").textContent = "Could not reach GitHub. Check your connection.";
+    }
+  }
+
+  $("send").onclick = () => send(names);
+  $("all").onclick = () => send([]);
+
+  onmessage = (e) => {
+    const m = e.data.pluginMessage || {};
+    if (m.type === "selection") { names = m.names; render(); }
+    if (m.type === "settings") {
+      if (m.settings.token) $("token").value = m.settings.token;
+      if (m.settings.repo) $("repo").value = m.settings.repo;
+      if (!m.settings.token) $("setup").open = true;
+    }
+  };
+  post({ type: "ready" });
+</script>

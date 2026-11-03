@@ -1,0 +1,13 @@
+{
+  "name": "Send to code",
+  "id": "ds-poc-send-to-code",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["https://api.github.com"],
+    "reasoning": "Starts the GitHub build that turns the selected Figma components into code."
+  }
+}
