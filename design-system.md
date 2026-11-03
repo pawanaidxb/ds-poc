@@ -26,8 +26,8 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 
 | Token | CSS variable | Light | Dark | Type |
 | --- | --- | --- | --- | --- |
-| `color.primary` | `--color-primary` | #3200fb | #1a02cc | color |
-| `color.primary-hover` | `--color-primary-hover` | #000fe2 | #0b0aa9 | color |
+| `color.primary` | `--color-primary` | #a00010 | #d1cbff | color |
+| `color.primary-hover` | `--color-primary-hover` | #c9004d | #434386 | color |
 | `color.on-primary` | `--color-on-primary` | #ffffff | #000000 | color |
 | `color.text` | `--color-text` | #171717 | #ebebeb | color |
 | `color.text-muted` | `--color-text-muted` | #737373 | #c6c6c6 | color |
@@ -99,8 +99,8 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 Matches the "Button" component in Figma.
 
 - Import: `import { Button } from "ds-poc";` (file `src/components/Button/Button.jsx`)
-- Storybook stories: Primary, Secondary, Disabled
-- Tokens used: `--spacing-sm` `--spacing-md` `--radius-md` `--color-primary` `--color-on-primary` `--color-primary-hover` `--color-surface` `--color-text` `--color-border`
+- Storybook stories: Primary, Secondary, Disabled, AllStates
+- Tokens used: `--spacing-sm` `--spacing-md` `--radius-md` `--color-primary` `--color-on-primary` `--color-primary-hover` `--color-surface` `--color-text` `--color-border` `--color-icon`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -111,7 +111,9 @@ Matches the "Button" component in Figma.
 Figma to code:
 
 - Figma property "Type" (Primary / Secondary)  ->  prop "variant"
+- Figma property "Type" = Disabled             ->  prop "disabled" (true)
 - Figma property "Label" (text)                ->  prop "children"
+- Hover -> real browser state, no prop needed
 
 ```jsx
 <Button variant="primary">Book flight</Button>
