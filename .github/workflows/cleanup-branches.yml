@@ -1,0 +1,18 @@
+# One-time cleanup: deletes branches that are no longer used. Only main and test stay.
+name: Remove unused branches
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/cleanup-branches.yml]
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Delete every branch except main and test
+        run: |
+          for b in $(git ls-remote --heads origin | sed 's#.*refs/heads/##'); do
+            case "$b" in main|test) echo "Keep $b";; *) git push origin --delete "$b" && echo "Deleted $b";; esac
+          done
