@@ -2,7 +2,7 @@
 
 Generated from the code and `tokens.json` on every push. Do not edit by hand: change Figma or the components, then push.
 
-- 24 tokens (Light and Dark) · 25 components · package `ds-poc`
+- 24 tokens (Light and Dark) · 26 components · package `ds-poc`
 - Live examples: Storybook (Components and Table sections)
 
 ## How to build UI with this design system (read first, AI tools included)
@@ -70,6 +70,7 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 | [`Card`](#card) | Card | Core |
 | [`Input`](#input) | Input | Core |
 | [`Checkbox`](#checkbox) | Checkbox | Core |
+| [`Radio`](#radio) | Radio | Core |
 | [`TableCheckbox`](#tablecheckbox) | Table / Checkbox | Table |
 | [`TableDragHandle`](#tabledraghandle) | Table / Drag handle | Table |
 | [`TableSelectionCell`](#tableselectioncell) | Table / Selection cell | Table |
@@ -207,6 +208,39 @@ Figma to code:
 
 ```jsx
 <Checkbox checked={false} />
+```
+
+#### Radio
+
+Matches the "Radio" component set in Figma (node 103:4322).
+
+- Import: `import { Radio } from "ds-poc";` (file `src/components/Radio/Radio.jsx`)
+- Storybook stories: Default, Checked, Disabled, AllStates
+- Tokens used: `--color-icon` `--radius-full` `--color-surface`
+
+| Prop | Default | Options |
+| --- | --- | --- |
+| `checked` | — |  |
+| `defaultChecked` | — |  |
+| `disabled` | `false` | `true` · `false` |
+| `label` | `"Radio"` |  |
+| `name` | — |  |
+| `value` | — |  |
+| `onChange` | — | function |
+
+Figma to code:
+
+- Figma property                 ->  code prop
+- Property 1=Default             ->  checked = false
+- Property 1=Variant2 (dot)      ->  checked = true
+- (no Hover / Focus in Figma)    ->  real browser :focus-visible ring
+- (code only) disabled           ->  disabled (boolean)
+- (code only) label              ->  label, read by screen readers only (no text in Figma)
+- (code only) name / value       ->  passed to the native radio so groups work
+- Works controlled (checked + onChange) or on its own (defaultChecked).
+
+```jsx
+<Radio checked={false} readOnly />
 ```
 
 ### Table components
