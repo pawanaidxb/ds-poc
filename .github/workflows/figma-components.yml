@@ -34,6 +34,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Only ever build on test
+        run: |
+          B="${{ github.event.client_payload.branch || 'test' }}"
+          if [ "$B" != "test" ]; then echo "::error::This build only writes to test (asked for: $B)."; exit 1; fi
+          echo "Building on: test"
+
       - name: Get the repo (test branch)
         uses: actions/checkout@v4
         with:

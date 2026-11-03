@@ -17,11 +17,14 @@
   .ok { color: var(--figma-color-text-success); }
   .err { color: var(--figma-color-text-danger); }
   details { margin: 0 0 12px; }
+  .target { margin: 0 0 12px; padding: 8px; border-radius: 6px; background: var(--figma-color-bg-secondary); }
   summary { cursor: pointer; font-weight: 500; margin-bottom: 8px; }
 </style>
 
 <h1>Send to code</h1>
 <p>Select components, then send. Code goes to the <b>test</b> branch with a preview. Nothing goes live until you merge.</p>
+
+<div class="target">Sends to branch: <b>test</b> (preview). Main changes only when you merge.</div>
 
 <label>Selected components</label>
 <div class="box" id="names"><span class="empty">Select a component, an instance or a frame of components.</span></div>
@@ -64,11 +67,11 @@
       const res = await fetch(`https://api.github.com/repos/${repo}/dispatches`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", "Content-Type": "application/json" },
-        body: JSON.stringify({ event_type: "figma-library-publish", client_payload: { components: list.join(","), source: "figma-plugin" } }),
+        body: JSON.stringify({ event_type: "figma-library-publish", client_payload: { components: list.join(","), branch: "test", source: "figma-plugin" } }),
       });
       if (res.status === 204) {
         $("status").className = "status ok";
-        $("status").innerHTML = `Sent ${list.length ? list.join(", ") : "all components"}. In about 5 minutes the "Preview: test" pull request shows the result. <a href="https://github.com/${repo}/actions" target="_blank">Watch the build</a>`;
+        $("status").innerHTML = `Sent ${list.length ? list.join(", ") : "all components"} to <b>test</b>. In about 5 minutes the "Preview: test" pull request shows the result. <a href="https://github.com/${repo}/actions" target="_blank">Watch the build</a>`;
         post({ type: "notify", text: "Sent to code. Check the test preview in a few minutes." });
       } else {
         const t = res.status === 401 ? "The token is wrong or expired." : res.status === 404 ? "Repository not found, or the token has no access to it." : res.status === 403 ? "The token needs Contents: Read and write." : `GitHub said ${res.status}.`;
