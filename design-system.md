@@ -2,7 +2,7 @@
 
 Generated from the code and `tokens.json` on every push. Do not edit by hand: change Figma or the components, then push.
 
-- 24 tokens (Light and Dark) · 33 components · package `ds-poc`
+- 24 tokens (Light and Dark) · 34 components · package `ds-poc`
 - Live examples: Storybook (Components and Table sections)
 
 ## How to build UI with this design system (read first, AI tools included)
@@ -97,6 +97,7 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 | [`TableBulkSelectionBar`](#tablebulkselectionbar) | Table / Bulk selection bar | Table |
 | [`TableDropIndicator`](#tabledropindicator) | Table / Drop indicator | Table |
 | [`TableDragPreview`](#tabledragpreview) | Table / Drag preview | Table |
+| [`TableFiltersPanel`](#tablefilterspanel) | Table / Filters panel | Table |
 | [`TableAdvancedFilterPanel`](#tableadvancedfilterpanel) | Table / Advanced filter panel | Table |
 | [`DataTable`](#datatable) | Data table | Table |
 
@@ -694,6 +695,7 @@ Matches "Table / Menu option" in Figma.
 | `detail` | `"12"` |  |
 | `showDetail` | `true` | `true` · `false` |
 | `selected` | `false` | `true` · `false` |
+| `indeterminate` | `false` | `true` · `false` |
 | `disabled` | `false` | `true` · `false` |
 | `onSelect` | — | function |
 
@@ -701,6 +703,7 @@ Figma to code:
 
 - Kind=Checkbox/Action -> kind · Label -> label · Detail -> detail · Show detail -> showDetail
 - State=Selected -> selected (checkbox kind) · Focus -> CSS :focus-visible · Disabled -> disabled
+- (code only) indeterminate -> the dash shown on "Select all" when only some values are ticked (Figma Data table)
 
 ```jsx
 <TableMenuOption label="Editor" detail="12" />
@@ -1033,6 +1036,41 @@ Figma to code:
 <TableDragPreview />
 ```
 
+#### TableFiltersPanel
+
+Matches "Table / Filters panel" in Figma (147:7711).
+
+- Import: `import { TableFiltersPanel } from "ds-poc";` (file `src/components/TableFiltersPanel/TableFiltersPanel.jsx`)
+- Built from: `Button`, `Input`, `Dropdown`, `TableMenuOption`, `TableAdvancedFilterPanel`
+- Storybook stories: GeneralFilters, CustomFilters
+- Tokens used: `--spacing-ml` `--color-surface` `--color-border` `--color-text` `--color-text-muted` `--spacing-sm` `--spacing-ms`
+
+| Prop | Default | Options |
+| --- | --- | --- |
+| `tab` | `"general"` | `general` · `custom` |
+| `onTabChange` | — | function |
+| `onClose` | — | function |
+| `fields` | `[]` |  |
+| `checklist` | — |  |
+| `onReset` | — | function |
+| `onApply` | — | function |
+| `custom` | `{}` |  |
+
+Figma to code:
+
+- Tab=General filters -> tab="general": dropdown fields + a value checklist + Reset / Apply
+- Tab=Custom filters  -> tab="custom": the custom filter rules (TableAdvancedFilterPanel, without its own header)
+- Tabs -> tab + onTabChange · close (x) -> onClose
+- General tab:
+- fields: [{ key, label, placeholder, options: [{ value, label }], value, onChange }]  ("Status", "Workspace")
+- checklist: { title, values: [{ value, label, count }], selected: [...], total, query, onQueryChange, onToggle(value), onToggleAll }
+- onReset · onApply
+- Custom tab: custom = the props for TableAdvancedFilterPanel (rules, match, matchCount, summary, on... handlers)
+
+```jsx
+<TableFiltersPanel />
+```
+
 #### TableAdvancedFilterPanel
 
 Matches "Table / Advanced filter panel" in Figma.
@@ -1073,9 +1111,9 @@ Figma to code:
 Matches the "Data table" component set in Figma (15 states), built from the Table/* parts.
 
 - Import: `import { DataTable } from "ds-poc";` (file `src/components/DataTable/DataTable.jsx`)
-- Built from: `TableToolbar`, `TableFilterChip`, `TableColumnGroup`, `TableHeaderCell`, `TableCheckbox`, `TableSelectionCell`, `TableCell`, `TableRow`, `TableGroupRow`, `TablePagination`, `TableBulkSelectionBar`, `TableColumnMenu`, `TableMenuOption`, `TableAdvancedFilterPanel`, `TableColumnConfigPanel`, `Dropdown`, `Input`, `Button`
-- Storybook stories: Default, Sorted, ColumnFilter, ColumnVisibility, CustomFilters, ColumnResize, MultiSelect, Grouped, RowDragging, ColumnsReordered, HiddenColumnsShown, HiddenColumnsShownDefaultOrder, GroupByDropdown, ColumnGroupsConfiguration, ColumnDragging
-- Tokens used: `--color-surface` `--color-text` `--color-border` `--radius-md` `--spacing-md` `--spacing-lg` `--spacing-ml` `--spacing-2xs` `--color-text-muted` `--radius-sm` `--color-surface-sunken` `--color-surface-muted` `--color-primary-subtle` `--spacing-xs` `--spacing-sm` `--color-primary` `--spacing-14` `--color-icon` `--shadow-popover` `--spacing-ms`
+- Built from: `TableToolbar`, `TableFilterChip`, `TableColumnGroup`, `TableHeaderCell`, `TableCheckbox`, `TableSelectionCell`, `TableCell`, `TableRow`, `TableGroupRow`, `TablePagination`, `TableBulkSelectionBar`, `TableColumnMenu`, `TableMenuOption`, `TableAdvancedFilterPanel`, `TableColumnConfigPanel`, `TableFiltersPanel`, `Input`, `Button`
+- Storybook stories: Default, Sorted, ColumnFilter, GeneralFilters, ColumnVisibility, CustomFilters, ColumnResize, MultiSelect, Grouped, RowDragging, ColumnsReordered, HiddenColumnsShown, HiddenColumnsShownDefaultOrder, GroupByDropdown, ColumnGroupsConfiguration, ColumnDragging
+- Tokens used: `--color-surface` `--color-text` `--color-border` `--radius-md` `--spacing-md` `--spacing-lg` `--spacing-ml` `--spacing-2xs` `--color-text-muted` `--radius-sm` `--color-surface-sunken` `--color-surface-muted` `--color-primary-subtle` `--spacing-xs` `--spacing-sm` `--color-primary` `--spacing-14` `--color-icon` `--shadow-popover`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -1094,6 +1132,7 @@ Matches the "Data table" component set in Figma (15 states), built from the Tabl
 | `initialPeek` | `false` | `true` · `false` |
 | `initialFiltersOpen` | `false` | `true` · `false` |
 | `initialGroupByOpen` | `false` | `true` · `false` |
+| `initialFilterMenu` | `null` |  |
 | `initialRules` | `[]` |  |
 | `initialMatch` | `"AND"` |  |
 | `initialSelected` | `[]` |  |
@@ -1112,7 +1151,8 @@ Figma to code:
 - Hidden columns shown - default order -> the eye button: shows hidden columns for now, saved setup unchanged (or initialPeek)
 - Group by dropdown  -> the "Group by" dropdown in the toolbar (or initialGroupBy)
 - Column groups configuration -> "Configure columns" > Groups (or initialConfigView="groups")
-- Column filter / Custom filters -> "Filters" opens the side panel: General filters / Custom filters tabs
+- General filters / Custom filters -> "Filters" opens TableFiltersPanel (Figma "Table / Filters panel")
+- Column filter      -> a header's filter icon opens "Filter by <column>" (or initialColumnFilters + initialFilterMenu)
 - Custom filters     -> "Custom filters" panel (or initialRules)
 - Column resize      -> drag a header's right edge; double-click it for the width menu
 - Multi-select       -> row checkboxes (or initialSelected)
