@@ -76,8 +76,8 @@ Set `data-brand` on the page to switch brand: `brand-a` (default), `brand-b`, `b
 | `brand.primary-subtle.light` | `--brand-primary-subtle-light` | #fff0f5 | #eff4ff | #ecfdf8 |
 | `brand.primary-subtle.dark` | `--brand-primary-subtle-dark` | #3a0d1f | #0f1d3d | #0b2b27 |
 | `font.family.heading` | `--font-family-heading` | Urbanist | Poppins | Lora |
-| `font.family.body` | `--font-family-body` | Inter | DM Sans | IBM Plex Sans |
-| `font.family.button` | `--font-family-button` | Urbanist | Poppins | IBM Plex Sans |
+| `font.family.body` | `--font-family-body` | Inter | DM Sans | Lora |
+| `font.family.button` | `--font-family-button` | Urbanist | Poppins | Lora |
 | `font.style.heading-regular` | `--font-style-heading-regular` | Regular | Regular | Regular |
 | `font.style.heading-semibold` | `--font-style-heading-semibold` | SemiBold | SemiBold | SemiBold |
 | `font.style.body-regular` | `--font-style-body-regular` | Regular | Regular | Regular |
