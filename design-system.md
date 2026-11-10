@@ -20,15 +20,15 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 
 - Token sets: `POC Tokens/Light`, `POC Tokens/Dark`, `Brand/Brand A`, `Brand/Brand B`, `Brand/Brand C`
 - Total tokens: 41
-- Use in code: `var(--name)`, e.g. `color: var(--color-primary);`
+- Use in code: `var(--name)`, e.g. `color: var(--brand-primary-light);`
 
 ### color
 
 | Token | CSS variable | Light | Dark | Type |
 | --- | --- | --- | --- | --- |
-| `color.primary` | `--color-primary` | #0f766e | #5eead4 | color |
-| `color.primary-hover` | `--color-primary-hover` | #115e59 | #2dd4bf | color |
-| `color.on-primary` | `--color-on-primary` | #ffffff | #04201d | color |
+| `color.primary` | `--color-primary` | var(--brand-primary-light) | var(--brand-primary-dark) | color |
+| `color.primary-hover` | `--color-primary-hover` | var(--brand-primary-hover-light) | var(--brand-primary-hover-dark) | color |
+| `color.on-primary` | `--color-on-primary` | var(--brand-on-primary-light) | var(--brand-on-primary-dark) | color |
 | `color.text` | `--color-text` | #171717 | #ebebeb | color |
 | `color.text-muted` | `--color-text-muted` | #737373 | #c6c6c6 | color |
 | `color.surface` | `--color-surface` | #ffffff | #000000 | color |
@@ -36,7 +36,7 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 | `color.danger` | `--color-danger` | #d32f2f | #bd2a2a | color |
 | `color.icon` | `--color-icon` | #525866 | #a3a9b5 | color |
 | `color.border-strong` | `--color-border-strong` | #b5bbc4 | #7a808c | color |
-| `color.primary-subtle` | `--color-primary-subtle` | #ecfdf8 | #0b2b27 | color |
+| `color.primary-subtle` | `--color-primary-subtle` | var(--brand-primary-subtle-light) | var(--brand-primary-subtle-dark) | color |
 | `color.surface-muted` | `--color-surface-muted` | #f8f9fb | #121212 | color |
 | `color.surface-sunken` | `--color-surface-sunken` | #f3f4f6 | #1a1a1a | color |
 | `color.info` | `--color-info` | #2e6feb | #6fa8ff | color |
@@ -60,33 +60,30 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 | `radius.sm` | `--radius-sm` | 4px | 4px | number |
 | `radius.md` | `--radius-md` | 8px | 8px | number |
 | `radius.xs` | `--radius-xs` | 3px | 3px | number |
-| `radius.button` | `--radius-button` | 2px |  | number |
 
-### brand
+### Brands
 
-| Token | CSS variable | Light | Dark | Type |
+Set `data-brand` on the page to switch brand: `brand-a` (default), `brand-b`, `brand-c`. Light / Dark still uses `data-theme`.
+
+| Token | CSS variable | Brand A | Brand B | Brand C |
 | --- | --- | --- | --- | --- |
-| `brand.primary.light` | `--brand-primary-light` | #0f766e |  | color |
-| `brand.primary.dark` | `--brand-primary-dark` | #5eead4 |  | color |
-| `brand.primary-hover.light` | `--brand-primary-hover-light` | #115e59 |  | color |
-| `brand.primary-hover.dark` | `--brand-primary-hover-dark` | #2dd4bf |  | color |
-| `brand.on-primary.light` | `--brand-on-primary-light` | #ffffff |  | color |
-| `brand.on-primary.dark` | `--brand-on-primary-dark` | #04201d |  | color |
-| `brand.primary-subtle.light` | `--brand-primary-subtle-light` | #ecfdf8 |  | color |
-| `brand.primary-subtle.dark` | `--brand-primary-subtle-dark` | #0b2b27 |  | color |
-
-### font
-
-| Token | CSS variable | Light | Dark | Type |
-| --- | --- | --- | --- | --- |
-| `font.family.heading` | `--font-family-heading` | Lora |  | text |
-| `font.family.body` | `--font-family-body` | IBM Plex Sans |  | text |
-| `font.family.button` | `--font-family-button` | IBM Plex Sans |  | text |
-| `font.style.heading-regular` | `--font-style-heading-regular` | Regular |  | fontWeights |
-| `font.style.heading-semibold` | `--font-style-heading-semibold` | SemiBold |  | fontWeights |
-| `font.style.body-regular` | `--font-style-body-regular` | Regular |  | fontWeights |
-| `font.style.body-medium` | `--font-style-body-medium` | Medium |  | fontWeights |
-| `font.style.body-semibold` | `--font-style-body-semibold` | SemiBold |  | fontWeights |
+| `brand.primary.light` | `--brand-primary-light` | #a00010 | #1d4ed8 | #0f766e |
+| `brand.primary.dark` | `--brand-primary-dark` | #d1cbff | #8fb4ff | #5eead4 |
+| `brand.primary-hover.light` | `--brand-primary-hover-light` | #c9004d | #1e40af | #115e59 |
+| `brand.primary-hover.dark` | `--brand-primary-hover-dark` | #434386 | #6d94f0 | #2dd4bf |
+| `brand.on-primary.light` | `--brand-on-primary-light` | #ffffff | #ffffff | #ffffff |
+| `brand.on-primary.dark` | `--brand-on-primary-dark` | #000000 | #0a0a0a | #04201d |
+| `brand.primary-subtle.light` | `--brand-primary-subtle-light` | #fff0f5 | #eff4ff | #ecfdf8 |
+| `brand.primary-subtle.dark` | `--brand-primary-subtle-dark` | #3a0d1f | #0f1d3d | #0b2b27 |
+| `font.family.heading` | `--font-family-heading` | Urbanist | Poppins | Lora |
+| `font.family.body` | `--font-family-body` | Inter | DM Sans | IBM Plex Sans |
+| `font.family.button` | `--font-family-button` | Urbanist | Poppins | IBM Plex Sans |
+| `font.style.heading-regular` | `--font-style-heading-regular` | Regular | Regular | Regular |
+| `font.style.heading-semibold` | `--font-style-heading-semibold` | SemiBold | SemiBold | SemiBold |
+| `font.style.body-regular` | `--font-style-body-regular` | Regular | Regular | Regular |
+| `font.style.body-medium` | `--font-style-body-medium` | Medium | Medium | Medium |
+| `font.style.body-semibold` | `--font-style-body-semibold` | Semi Bold | SemiBold | SemiBold |
+| `radius.button` | `--radius-button` | 8px | 999px | 2px |
 
 <!-- components:start -->
 ## Components
@@ -136,7 +133,7 @@ Matches the "Button" component in Figma.
 
 - Import: `import { Button } from "ds-poc";` (file `src/components/Button/Button.jsx`)
 - Storybook stories: Primary, Secondary, Disabled, LeftIcon, RightIcon, IconOnly, AllStates
-- Tokens used: `--spacing-sm` `--spacing-md` `--radius-md` `--color-primary` `--color-on-primary` `--color-primary-hover` `--color-surface` `--color-text` `--color-border` `--color-icon`
+- Tokens used: `--font-family-button` `--spacing-sm` `--spacing-md` `--radius-button` `--radius-md` `--color-primary` `--color-on-primary` `--color-primary-hover` `--color-surface` `--color-text` `--color-border` `--color-icon`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -190,7 +187,7 @@ Matches the "Input" component set in Figma (DS POC file).
 
 - Import: `import { Input } from "ds-poc";` (file `src/components/Input/Input.jsx`)
 - Storybook stories: Default, Filled, ErrorState, Disabled, AllSizes, AllStates
-- Tokens used: `--spacing-sm` `--color-text` `--spacing-md` `--color-primary` `--color-surface` `--color-border` `--radius-md` `--color-text-muted` `--color-border-hover` `--color-danger` `--color-surface-disabled` `--color-text-disabled`
+- Tokens used: `--spacing-sm` `--font-family-body` `--color-text` `--spacing-md` `--color-primary` `--color-surface` `--color-border` `--radius-md` `--color-text-muted` `--color-border-hover` `--color-danger` `--color-surface-disabled` `--color-text-disabled`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -292,7 +289,7 @@ Matches "Dropdown" in Figma (130:6713): label, trigger, list and helper text.
 - Import: `import { Dropdown } from "ds-poc";` (file `src/components/Dropdown/Dropdown.jsx`)
 - Built from: `DropdownTrigger`, `DropdownList`
 - Storybook stories: Default, Selected, Open, ErrorState, Disabled, MultipleSelected, MultipleOpen, AllStates
-- Tokens used: `--spacing-sm` `--color-text` `--color-text-muted` `--color-danger`
+- Tokens used: `--spacing-sm` `--font-family-body` `--color-text` `--color-text-muted` `--color-danger`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -335,7 +332,7 @@ Matches "Dropdown / Trigger" in Figma (130:6371).
 - Import: `import { DropdownTrigger } from "ds-poc";` (file `src/components/DropdownTrigger/DropdownTrigger.jsx`)
 - Built from: `TableFilterChip`
 - Storybook stories: Default, Selected, Open, ErrorState, Disabled, MultipleSelected
-- Tokens used: `--spacing-sm` `--spacing-ms` `--color-surface` `--color-text` `--color-border` `--radius-sm` `--color-text-muted` `--spacing-xs` `--color-primary` `--color-danger` `--color-surface-muted`
+- Tokens used: `--font-family-body` `--spacing-sm` `--spacing-ms` `--color-surface` `--color-text` `--color-border` `--radius-sm` `--color-text-muted` `--spacing-xs` `--color-primary` `--color-danger` `--color-surface-muted`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -368,7 +365,7 @@ Matches "Dropdown / List" in Figma (130:6463).
 - Import: `import { DropdownList } from "ds-poc";` (file `src/components/DropdownList/DropdownList.jsx`)
 - Built from: `Input`, `Button`, `DropdownOption`
 - Storybook stories: SingleOptions, MultipleOptions, SingleEmpty, MultipleEmpty
-- Tokens used: `--spacing-sm` `--spacing-ms` `--color-surface` `--color-border` `--radius-sm` `--shadow-dropdown` `--spacing-lg` `--color-text` `--color-text-muted`
+- Tokens used: `--spacing-sm` `--spacing-ms` `--color-surface` `--color-border` `--radius-sm` `--shadow-dropdown` `--font-family-body` `--spacing-lg` `--color-text` `--color-text-muted`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -408,7 +405,7 @@ Matches "Dropdown / Option" in Figma (130:6230).
 - Import: `import { DropdownOption } from "ds-poc";` (file `src/components/DropdownOption/DropdownOption.jsx`)
 - Built from: `TableCheckbox`
 - Storybook stories: Default, Selected, Disabled, MultipleSelected, AllStates
-- Tokens used: `--spacing-sm` `--spacing-ms` `--radius-sm` `--color-surface` `--color-text` `--color-primary` `--color-surface-muted` `--color-primary-subtle` `--color-text-muted`
+- Tokens used: `--spacing-sm` `--spacing-ms` `--radius-sm` `--color-surface` `--color-text` `--font-family-body` `--color-primary` `--color-surface-muted` `--color-primary-subtle` `--color-text-muted`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -516,7 +513,7 @@ Matches "Table / Cell" in Figma.
 
 - Import: `import { TableCell } from "ds-poc";` (file `src/components/TableCell/TableCell.jsx`)
 - Storybook stories: Text, Number, Muted, Status, Emphasis, Selected, Dragging, Disabled, AllStates
-- Tokens used: `--spacing-ms` `--color-text` `--color-icon` `--color-surface-muted` `--color-primary-subtle` `--color-primary`
+- Tokens used: `--spacing-ms` `--font-family-body` `--color-text` `--color-icon` `--color-surface-muted` `--color-primary-subtle` `--color-primary`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -546,7 +543,7 @@ Matches "Table / Header cell" in Figma.
 - Import: `import { TableHeaderCell } from "ds-poc";` (file `src/components/TableHeaderCell/TableHeaderCell.jsx`)
 - Built from: `TableDragHandle`
 - Storybook stories: Default, Ascending, Descending, Filtered, Resizing, Dragging, DropTarget, Disabled, RightAligned, ClickToSort
-- Tokens used: `--spacing-sm` `--color-border` `--color-surface` `--color-text` `--spacing-xs` `--color-text-muted` `--color-primary` `--color-surface-muted` `--color-primary-subtle`
+- Tokens used: `--spacing-sm` `--color-border` `--color-surface` `--font-family-body` `--color-text` `--spacing-xs` `--color-text-muted` `--color-primary` `--color-surface-muted` `--color-primary-subtle`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -613,7 +610,7 @@ Matches "Table / Filter chip" in Figma.
 
 - Import: `import { TableFilterChip } from "ds-poc";` (file `src/components/TableFilterChip/TableFilterChip.jsx`)
 - Storybook stories: Active, Disabled
-- Tokens used: `--spacing-sm` `--spacing-2xs` `--spacing-9` `--color-primary-subtle` `--color-primary-border` `--radius-sm` `--color-primary-hover` `--color-primary`
+- Tokens used: `--spacing-sm` `--spacing-2xs` `--spacing-9` `--color-primary-subtle` `--color-primary-border` `--radius-sm` `--font-family-body` `--color-primary-hover` `--color-primary`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -635,7 +632,7 @@ Matches "Table / Filter control" in Figma.
 
 - Import: `import { TableFilterControl } from "ds-poc";` (file `src/components/TableFilterControl/TableFilterControl.jsx`)
 - Storybook stories: Field, Operator, Placeholder, Disabled
-- Tokens used: `--spacing-10` `--color-surface` `--color-text` `--color-border` `--radius-sm` `--color-primary` `--color-text-muted`
+- Tokens used: `--spacing-10` `--color-surface` `--color-text` `--color-border` `--radius-sm` `--font-family-body` `--color-primary` `--color-text-muted`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -662,7 +659,7 @@ Matches "Table / Filter logic" in Figma.
 
 - Import: `import { TableFilterLogic } from "ds-poc";` (file `src/components/TableFilterLogic/TableFilterLogic.jsx`)
 - Storybook stories: And, Or, Interactive
-- Tokens used: `--spacing-3` `--color-surface-sunken` `--radius-sm` `--spacing-2xs` `--spacing-ms` `--radius-xs` `--color-text-muted` `--color-surface` `--color-border` `--color-primary`
+- Tokens used: `--spacing-3` `--color-surface-sunken` `--radius-sm` `--spacing-2xs` `--spacing-ms` `--radius-xs` `--font-family-body` `--color-text-muted` `--color-surface` `--color-border` `--color-primary`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -684,7 +681,7 @@ Matches "Table / Filter rule" in Figma.
 - Import: `import { TableFilterRule } from "ds-poc";` (file `src/components/TableFilterRule/TableFilterRule.jsx`)
 - Built from: `TableFilterControl`, `Input`
 - Storybook stories: Text, Number, Disabled
-- Tokens used: `--spacing-10` `--spacing-ms` `--color-surface-muted` `--color-border` `--radius-md` `--color-text` `--color-text-muted` `--color-primary`
+- Tokens used: `--spacing-10` `--spacing-ms` `--color-surface-muted` `--color-border` `--radius-md` `--font-family-body` `--color-text` `--color-text-muted` `--color-primary`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -713,7 +710,7 @@ Matches "Table / Menu option" in Figma.
 - Import: `import { TableMenuOption } from "ds-poc";` (file `src/components/TableMenuOption/TableMenuOption.jsx`)
 - Built from: `TableCheckbox`
 - Storybook stories: Checkbox, Selected, Action, Disabled, Interactive
-- Tokens used: `--spacing-10` `--spacing-sm` `--color-surface` `--radius-sm` `--color-text` `--color-text-muted` `--color-primary-subtle` `--color-primary`
+- Tokens used: `--spacing-10` `--spacing-sm` `--color-surface` `--radius-sm` `--font-family-body` `--color-text` `--color-text-muted` `--color-primary-subtle` `--color-primary`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -742,7 +739,7 @@ Matches "Table / Column menu" in Figma (the popover shell).
 
 - Import: `import { TableColumnMenu } from "ds-poc";` (file `src/components/TableColumnMenu/TableColumnMenu.jsx`)
 - Storybook stories: ColumnFilter, ColumnVisibility, ColumnWidth
-- Tokens used: `--spacing-10` `--spacing-ms` `--color-surface` `--color-border` `--radius-md` `--shadow-popover` `--color-text` `--color-text-muted` `--spacing-xs` `--spacing-sm`
+- Tokens used: `--spacing-10` `--spacing-ms` `--color-surface` `--color-border` `--radius-md` `--shadow-popover` `--font-family-body` `--color-text` `--color-text-muted` `--spacing-xs` `--spacing-sm`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -768,7 +765,7 @@ Matches "Table / Column configuration item" in Figma (122:4361).
 - Import: `import { TableColumnConfigItem } from "ds-poc";` (file `src/components/TableColumnConfigItem/TableColumnConfigItem.jsx`)
 - Built from: `TableDragHandle`, `TableCheckbox`
 - Storybook stories: Visible, Hidden, Dragging, AllStates
-- Tokens used: `--spacing-sm` `--color-surface` `--color-border` `--radius-sm` `--color-text` `--color-surface-muted` `--color-primary-subtle` `--color-primary`
+- Tokens used: `--spacing-sm` `--color-surface` `--color-border` `--radius-sm` `--font-family-body` `--color-text` `--color-surface-muted` `--color-primary-subtle` `--color-primary`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -803,7 +800,7 @@ Matches "Table / Column configuration panel" in Figma (122:4746).
 - Import: `import { TableColumnConfigPanel } from "ds-poc";` (file `src/components/TableColumnConfigPanel/TableColumnConfigPanel.jsx`)
 - Built from: `Input`, `Button`, `DropdownList`, `TableColumnConfigItem`, `TableConfigGroupHeader`
 - Storybook stories: Configure, Reordered, AllVisible, ColumnGroups, NewGroup, Ungrouped
-- Tokens used: `--spacing-ms` `--spacing-ml` `--color-surface` `--color-border` `--radius-md` `--color-text` `--spacing-sm` `--color-text-muted` `--spacing-xs` `--color-surface-muted` `--radius-sm` `--color-primary`
+- Tokens used: `--spacing-ms` `--spacing-ml` `--color-surface` `--color-border` `--radius-md` `--font-family-body` `--color-text` `--spacing-sm` `--color-text-muted` `--spacing-xs` `--color-surface-muted` `--radius-sm` `--color-primary`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -845,7 +842,7 @@ Matches "Table / Configuration group header" in Figma (134:7689).
 - Import: `import { TableConfigGroupHeader } from "ds-poc";` (file `src/components/TableConfigGroupHeader/TableConfigGroupHeader.jsx`)
 - Built from: `TableDragHandle`, `Input`, `Button`
 - Storybook stories: Default, Editing, Ungrouped
-- Tokens used: `--spacing-sm` `--color-surface` `--color-text-muted` `--color-text`
+- Tokens used: `--spacing-sm` `--color-surface` `--font-family-body` `--color-text-muted` `--color-text`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -882,7 +879,7 @@ Matches "Table / Column group" in Figma: a header that spans several columns.
 
 - Import: `import { TableColumnGroup } from "ds-poc";` (file `src/components/TableColumnGroup/TableColumnGroup.jsx`)
 - Storybook stories: Default, Dragging
-- Tokens used: `--spacing-ms` `--color-border` `--color-surface` `--color-icon` `--color-primary-subtle` `--color-primary`
+- Tokens used: `--spacing-ms` `--color-border` `--color-surface` `--font-family-body` `--color-icon` `--color-primary-subtle` `--color-primary`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -904,7 +901,7 @@ Matches "Table / Group row" in Figma.
 
 - Import: `import { TableGroupRow } from "ds-poc";` (file `src/components/TableGroupRow/TableGroupRow.jsx`)
 - Storybook stories: Expanded, Collapsed, Interactive
-- Tokens used: `--color-surface-sunken` `--color-border` `--spacing-10` `--spacing-14` `--color-primary` `--color-text-muted` `--color-text` `--spacing-ml` `--color-icon`
+- Tokens used: `--color-surface-sunken` `--color-border` `--spacing-10` `--spacing-14` `--font-family-body` `--color-primary` `--color-text-muted` `--color-text` `--spacing-ml` `--color-icon`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -931,7 +928,7 @@ Matches "Table / Pagination" in Figma.
 
 - Import: `import { TablePagination } from "ds-poc";` (file `src/components/TablePagination/TablePagination.jsx`)
 - Storybook stories: MultiplePages, SinglePage
-- Tokens used: `--spacing-14` `--color-text-muted` `--spacing-md` `--color-surface` `--color-border` `--radius-md` `--color-text` `--color-primary` `--radius-sm` `--color-surface-muted`
+- Tokens used: `--spacing-14` `--font-family-body` `--color-text-muted` `--spacing-md` `--color-surface` `--color-border` `--radius-md` `--font-family-button` `--color-text` `--color-primary` `--radius-sm` `--color-surface-muted`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -957,7 +954,7 @@ Matches "Table / Toolbar" as used in every "Data table" state in Figma.
 - Import: `import { TableToolbar } from "ds-poc";` (file `src/components/TableToolbar/TableToolbar.jsx`)
 - Built from: `Input`, `Button`, `DropdownTrigger`, `DropdownList`
 - Storybook stories: Default, ColumnFilter, CustomFilters, ColumnVisibility, HiddenColumnsShown, Grouped, GroupByDropdown
-- Tokens used: `--spacing-sm` `--spacing-14` `--spacing-lg` `--color-surface-muted` `--color-border` `--color-text-muted` `--color-surface` `--spacing-xs` `--color-icon` `--radius-md` `--color-border-strong` `--color-primary`
+- Tokens used: `--spacing-sm` `--spacing-14` `--spacing-lg` `--color-surface-muted` `--color-border` `--font-family-body` `--color-text-muted` `--color-surface` `--spacing-xs` `--color-icon` `--radius-md` `--color-border-strong` `--color-primary`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -998,7 +995,7 @@ Matches "Table / Bulk selection bar" in Figma.
 - Import: `import { TableBulkSelectionBar } from "ds-poc";` (file `src/components/TableBulkSelectionBar/TableBulkSelectionBar.jsx`)
 - Built from: `TableCheckbox`, `Button`
 - Storybook stories: Active, Disabled
-- Tokens used: `--spacing-sm` `--color-primary` `--color-text-muted`
+- Tokens used: `--spacing-sm` `--font-family-body` `--color-primary` `--color-text-muted`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -1070,7 +1067,7 @@ Matches "Table / Filters panel" in Figma (147:7711).
 - Import: `import { TableFiltersPanel } from "ds-poc";` (file `src/components/TableFiltersPanel/TableFiltersPanel.jsx`)
 - Built from: `Button`, `Input`, `Dropdown`, `TableMenuOption`, `TableAdvancedFilterPanel`
 - Storybook stories: GeneralFilters, CustomFilters, ShortContainer
-- Tokens used: `--color-surface` `--color-border` `--radius-md` `--color-text` `--spacing-ml` `--spacing-ms` `--color-text-muted` `--spacing-sm` `--spacing-xs` `--spacing-18`
+- Tokens used: `--color-surface` `--color-border` `--radius-md` `--font-family-body` `--color-text` `--spacing-ml` `--spacing-ms` `--color-text-muted` `--spacing-sm` `--spacing-xs` `--spacing-18`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -1107,7 +1104,7 @@ Matches "Table / Advanced filter panel" in Figma.
 - Import: `import { TableAdvancedFilterPanel } from "ds-poc";` (file `src/components/TableAdvancedFilterPanel/TableAdvancedFilterPanel.jsx`)
 - Built from: `TableFilterLogic`, `TableFilterRule`, `Button`
 - Storybook stories: Default, Disabled
-- Tokens used: `--spacing-ml` `--color-surface` `--color-border` `--color-text` `--color-text-muted` `--spacing-sm` `--spacing-2xs` `--spacing-ms` `--color-primary-subtle` `--radius-sm` `--color-primary-hover`
+- Tokens used: `--spacing-ml` `--color-surface` `--color-border` `--font-family-body` `--color-text` `--color-text-muted` `--spacing-sm` `--spacing-2xs` `--spacing-ms` `--color-primary-subtle` `--radius-sm` `--color-primary-hover`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -1144,7 +1141,7 @@ Matches the "Data table" component set in Figma (15 states), built from the Tabl
 - Import: `import { DataTable } from "ds-poc";` (file `src/components/DataTable/DataTable.jsx`)
 - Built from: `TableToolbar`, `TableFilterChip`, `TableColumnGroup`, `TableHeaderCell`, `TableCheckbox`, `TableSelectionCell`, `TableCell`, `TableRow`, `TableGroupRow`, `TablePagination`, `TableBulkSelectionBar`, `TableColumnMenu`, `TableMenuOption`, `TableAdvancedFilterPanel`, `TableColumnConfigPanel`, `TableFiltersPanel`, `Input`, `Button`
 - Storybook stories: Default, Sorted, ColumnFilter, GeneralFilters, ColumnVisibility, CustomFilters, ColumnResize, MultiSelect, Grouped, RowDragging, ColumnsReordered, HiddenColumnsShown, HiddenColumnsShownDefaultOrder, GroupByDropdown, ColumnGroupsConfiguration, ColumnDragging
-- Tokens used: `--color-surface` `--color-text` `--color-border` `--radius-md` `--spacing-md` `--spacing-lg` `--spacing-ml` `--spacing-2xs` `--color-text-muted` `--radius-sm` `--color-surface-sunken` `--color-surface-muted` `--color-primary-subtle` `--spacing-xs` `--spacing-sm` `--color-primary` `--spacing-14` `--color-icon` `--shadow-popover`
+- Tokens used: `--color-surface` `--color-text` `--color-border` `--radius-md` `--font-family-body` `--spacing-md` `--spacing-lg` `--spacing-ml` `--spacing-2xs` `--color-text-muted` `--radius-sm` `--color-surface-sunken` `--color-surface-muted` `--color-primary-subtle` `--spacing-xs` `--spacing-sm` `--color-primary` `--spacing-14` `--color-icon` `--shadow-popover`
 
 | Prop | Default | Options |
 | --- | --- | --- |
