@@ -1043,7 +1043,7 @@ Matches "Table / Filters panel" in Figma (147:7711).
 - Import: `import { TableFiltersPanel } from "ds-poc";` (file `src/components/TableFiltersPanel/TableFiltersPanel.jsx`)
 - Built from: `Button`, `Input`, `Dropdown`, `TableMenuOption`, `TableAdvancedFilterPanel`
 - Storybook stories: GeneralFilters, CustomFilters, ShortContainer
-- Tokens used: `--color-surface` `--color-border` `--color-text` `--spacing-ml` `--spacing-ms` `--color-text-muted` `--spacing-sm` `--spacing-xs`
+- Tokens used: `--color-surface` `--color-border` `--radius-md` `--color-text` `--spacing-ml` `--spacing-ms` `--color-text-muted` `--spacing-sm` `--spacing-xs` `--spacing-18`
 
 | Prop | Default | Options |
 | --- | --- | --- |
