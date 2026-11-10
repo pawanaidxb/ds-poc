@@ -1,0 +1,12 @@
+/* TableConfigGroupHeader — Figma "Table / Configuration group header": 40px, padding 0 spacing-sm, gap spacing-sm. */
+.poc-tcgh {
+  display: flex; align-items: center; gap: var(--spacing-sm);
+  min-height: 40px; padding: 0 var(--spacing-sm); box-sizing: border-box;
+  background: var(--color-surface); font-family: "Inter", system-ui, sans-serif;
+}
+.poc-tcgh__disclosure { display: inline-grid; place-items: center; padding: 0; border: 0; background: none; color: var(--color-text-muted); cursor: pointer; transition: transform 120ms ease; }
+.poc-tcgh__disclosure.is-collapsed { transform: rotate(-90deg); }
+.poc-tcgh__name { flex: 1 1 0; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px; line-height: 17px; font-weight: 600; color: var(--color-text); }
+.poc-tcgh__count { font-size: 11px; line-height: 15px; color: var(--color-text-muted); }
+.poc-tcgh__actions { display: inline-flex; gap: var(--spacing-sm); }
+.poc-tcgh__field { flex: 1 1 0; min-width: 0; }

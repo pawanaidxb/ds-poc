@@ -8,3 +8,16 @@
 .poc-ttool__group { display: flex; align-items: center; gap: var(--spacing-sm); flex-wrap: wrap; }
 .poc-ttool__status { font-size: 11px; line-height: 13px; color: var(--color-text-muted); }
 .poc-ttool .poc-input__field { background: var(--color-surface); }
+/* Figma: "Group by" trigger is 220px wide; its list floats below. */
+.poc-ttool__groupby { position: relative; width: 220px; }
+.poc-ttool__groupby-list { position: absolute; top: calc(100% + var(--spacing-xs)); left: 0; right: 0; z-index: 20; }
+/* Figma icon buttons: 35px square, surface fill, border, radius-md. */
+.poc-ttool__icon {
+  display: inline-grid; place-items: center; width: 35px; height: 35px; padding: 0; box-sizing: border-box;
+  background: var(--color-surface); color: var(--color-icon);
+  border: 1px solid var(--color-border); border-radius: var(--radius-md); cursor: pointer;
+}
+.poc-ttool__icon:hover { border-color: var(--color-border-strong); }
+.poc-ttool__icon.is-on { border-color: var(--color-primary); color: var(--color-primary); }
+.poc-ttool__icon:disabled { color: var(--color-text-muted); opacity: 0.5; cursor: not-allowed; }
+.poc-ttool__icon:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 1px; }

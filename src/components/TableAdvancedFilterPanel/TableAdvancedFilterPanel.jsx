@@ -9,15 +9,18 @@ import "./TableAdvancedFilterPanel.css";
  * TableAdvancedFilterPanel — matches "Table / Advanced filter panel" in Figma.
  * State=Default/Disabled -> disabled
  * rules: [{ id, kind: "text"|"number", field, operator, value }]
+ * (code only) showHeader=false -> no title or close button, for use inside the Data table "Filters" panel tab
  */
 export function TableAdvancedFilterPanel({ rules = [], match = "AND", matchCount, summary, disabled = false,
-  onMatchChange, onRuleChange, onRuleRemove, onAddRule, onApply, onClear, onClose }) {
+  onMatchChange, onRuleChange, onRuleRemove, onAddRule, onApply, onClear, onClose, showHeader = true }) {
   return (
-    <aside className={`poc-tafp${disabled ? " is-disabled" : ""}`} aria-label="Custom filters">
-      <div className="poc-tafp__head">
-        <h3 className="poc-tafp__title">Custom filters</h3>
-        <button type="button" className="poc-tafp__x" onClick={onClose} aria-label="Close custom filters"><XIcon size={16} /></button>
-      </div>
+    <aside className={`poc-tafp${disabled ? " is-disabled" : ""}${showHeader ? "" : " poc-tafp--embedded"}`} aria-label="Custom filters">
+      {showHeader && (
+        <div className="poc-tafp__head">
+          <h3 className="poc-tafp__title">Custom filters</h3>
+          <button type="button" className="poc-tafp__x" onClick={onClose} aria-label="Close custom filters"><XIcon size={16} /></button>
+        </div>
+      )}
       <p className="poc-tafp__desc">Build a precise view of your accounts. All conditions are applied to this table.</p>
       <div className="poc-tafp__match">
         <span>Match</span><TableFilterLogic value={match} onChange={onMatchChange} /><span>conditions</span>

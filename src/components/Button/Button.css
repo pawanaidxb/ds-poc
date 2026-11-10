@@ -8,7 +8,14 @@
   border-radius: var(--radius-md);
   border: 1px solid transparent;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
 }
+.poc-button__icon { display: inline-flex; flex: none; }
+/* Figma Layout=Icon only: square, spacing-sm on every side. */
+.poc-button--icon-only { padding: var(--spacing-sm); }
 .poc-button--primary {
   background: var(--color-primary);
   color: var(--color-on-primary);
@@ -28,12 +35,4 @@
   color: var(--color-on-primary);
   border-color: transparent;
   cursor: not-allowed;
-}
-
-/* A disabled secondary button stays an outline button with faded text (Figma toolbar: "Show hidden columns"). */
-.poc-button--secondary:disabled,
-.poc-button--secondary:disabled:hover {
-  background: var(--color-surface);
-  color: var(--color-text-muted);
-  border-color: var(--color-border);
 }

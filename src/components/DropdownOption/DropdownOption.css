@@ -1,0 +1,17 @@
+/* DropdownOption — Figma "Dropdown / Option": 40px, padding spacing-sm x spacing-ms, radius-sm. */
+.poc-ddopt {
+  display: flex; align-items: center; gap: var(--spacing-sm);
+  height: 40px; padding: var(--spacing-sm) var(--spacing-ms); box-sizing: border-box;
+  border: 1px solid transparent; border-radius: var(--radius-sm);
+  background: var(--color-surface); color: var(--color-text);
+  font-family: "Inter", system-ui, sans-serif; font-size: 14px; line-height: 20px;
+  cursor: pointer; outline: none;
+}
+.poc-ddopt__label { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.poc-ddopt__check { display: inline-flex; pointer-events: none; }
+.poc-ddopt__tick { display: inline-flex; color: var(--color-primary); }
+.poc-ddopt:hover { background: var(--color-surface-muted); }
+.poc-ddopt:focus-visible { border-color: var(--color-primary); }
+.poc-ddopt.is-selected { background: var(--color-primary-subtle); }
+.poc-ddopt.is-disabled { opacity: 0.4; cursor: not-allowed; background: var(--color-surface); }
+.poc-ddopt.is-disabled .poc-ddopt__label { color: var(--color-text-muted); }

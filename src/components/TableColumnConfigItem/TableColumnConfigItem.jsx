@@ -10,6 +10,7 @@ import "./TableColumnConfigItem.css";
  * State=Hidden        -> visible = false
  * State=Dragging      -> dragging
  * State=Focus         -> real browser focus (:focus-within), no prop
+ * (code only) size="compact" -> 32px high, as used inside a column group in Figma
  * Keyboard: Alt + Arrow Up / Down moves the column (onMoveUp / onMoveDown), Space toggles the checkbox.
  */
 export function TableColumnConfigItem({
@@ -17,6 +18,7 @@ export function TableColumnConfigItem({
   visible = true,
   dragging = false,
   dropTarget = false,
+  size = "default",
   onToggle,
   onMoveUp,
   onMoveDown,
@@ -28,7 +30,7 @@ export function TableColumnConfigItem({
     if (e.key === "ArrowUp" && onMoveUp) { e.preventDefault(); onMoveUp(); }
     if (e.key === "ArrowDown" && onMoveDown) { e.preventDefault(); onMoveDown(); }
   };
-  const cls = ["poc-tcci", !visible && "is-hidden", dragging && "is-dragging", dropTarget && "is-drop-target"].filter(Boolean).join(" ");
+  const cls = ["poc-tcci", size === "compact" && "poc-tcci--compact", !visible && "is-hidden", dragging && "is-dragging", dropTarget && "is-drop-target"].filter(Boolean).join(" ");
   return (
     <li className={cls} onKeyDown={onKeyDown} {...rest}>
       <TableDragHandle axis="row" dragging={dragging} label={`Drag ${columnName}. Alt and arrow keys also move it.`} {...dragHandleProps} />
