@@ -2,7 +2,7 @@
 
 Generated from the code and `tokens.json` on every push. Do not edit by hand: change Figma or the components, then push.
 
-- 24 tokens (Light and Dark) · 34 components · package `ds-poc`
+- 41 tokens (Light and Dark) · 34 components · package `ds-poc`
 - Live examples: Storybook (Components and Table sections)
 
 ## How to build UI with this design system (read first, AI tools included)
@@ -18,17 +18,17 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 
 ## Tokens
 
-- Token sets: `POC Tokens/Light`, `POC Tokens/Dark`
-- Total tokens: 24
+- Token sets: `POC Tokens/Light`, `POC Tokens/Dark`, `Brand/Brand A`, `Brand/Brand B`, `Brand/Brand C`
+- Total tokens: 41
 - Use in code: `var(--name)`, e.g. `color: var(--color-primary);`
 
 ### color
 
 | Token | CSS variable | Light | Dark | Type |
 | --- | --- | --- | --- | --- |
-| `color.primary` | `--color-primary` | #a00010 | #d1cbff | color |
-| `color.primary-hover` | `--color-primary-hover` | #c9004d | #434386 | color |
-| `color.on-primary` | `--color-on-primary` | #ffffff | #000000 | color |
+| `color.primary` | `--color-primary` | #0f766e | #5eead4 | color |
+| `color.primary-hover` | `--color-primary-hover` | #115e59 | #2dd4bf | color |
+| `color.on-primary` | `--color-on-primary` | #ffffff | #04201d | color |
 | `color.text` | `--color-text` | #171717 | #ebebeb | color |
 | `color.text-muted` | `--color-text-muted` | #737373 | #c6c6c6 | color |
 | `color.surface` | `--color-surface` | #ffffff | #000000 | color |
@@ -36,7 +36,7 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 | `color.danger` | `--color-danger` | #d32f2f | #bd2a2a | color |
 | `color.icon` | `--color-icon` | #525866 | #a3a9b5 | color |
 | `color.border-strong` | `--color-border-strong` | #b5bbc4 | #7a808c | color |
-| `color.primary-subtle` | `--color-primary-subtle` | #fff0f5 | #3a0d1f | color |
+| `color.primary-subtle` | `--color-primary-subtle` | #ecfdf8 | #0b2b27 | color |
 | `color.surface-muted` | `--color-surface-muted` | #f8f9fb | #121212 | color |
 | `color.surface-sunken` | `--color-surface-sunken` | #f3f4f6 | #1a1a1a | color |
 | `color.info` | `--color-info` | #2e6feb | #6fa8ff | color |
@@ -60,6 +60,33 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 | `radius.sm` | `--radius-sm` | 4px | 4px | number |
 | `radius.md` | `--radius-md` | 8px | 8px | number |
 | `radius.xs` | `--radius-xs` | 3px | 3px | number |
+| `radius.button` | `--radius-button` | 2px |  | number |
+
+### brand
+
+| Token | CSS variable | Light | Dark | Type |
+| --- | --- | --- | --- | --- |
+| `brand.primary.light` | `--brand-primary-light` | #0f766e |  | color |
+| `brand.primary.dark` | `--brand-primary-dark` | #5eead4 |  | color |
+| `brand.primary-hover.light` | `--brand-primary-hover-light` | #115e59 |  | color |
+| `brand.primary-hover.dark` | `--brand-primary-hover-dark` | #2dd4bf |  | color |
+| `brand.on-primary.light` | `--brand-on-primary-light` | #ffffff |  | color |
+| `brand.on-primary.dark` | `--brand-on-primary-dark` | #04201d |  | color |
+| `brand.primary-subtle.light` | `--brand-primary-subtle-light` | #ecfdf8 |  | color |
+| `brand.primary-subtle.dark` | `--brand-primary-subtle-dark` | #0b2b27 |  | color |
+
+### font
+
+| Token | CSS variable | Light | Dark | Type |
+| --- | --- | --- | --- | --- |
+| `font.family.heading` | `--font-family-heading` | Lora |  | text |
+| `font.family.body` | `--font-family-body` | IBM Plex Sans |  | text |
+| `font.family.button` | `--font-family-button` | IBM Plex Sans |  | text |
+| `font.style.heading-regular` | `--font-style-heading-regular` | Regular |  | fontWeights |
+| `font.style.heading-semibold` | `--font-style-heading-semibold` | SemiBold |  | fontWeights |
+| `font.style.body-regular` | `--font-style-body-regular` | Regular |  | fontWeights |
+| `font.style.body-medium` | `--font-style-body-medium` | Medium |  | fontWeights |
+| `font.style.body-semibold` | `--font-style-body-semibold` | SemiBold |  | fontWeights |
 
 <!-- components:start -->
 ## Components
