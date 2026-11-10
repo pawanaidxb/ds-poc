@@ -13,18 +13,21 @@ import { TableBulkSelectionBar } from "../TableBulkSelectionBar/TableBulkSelecti
 import { TableColumnMenu } from "../TableColumnMenu/TableColumnMenu";
 import { TableMenuOption } from "../TableMenuOption/TableMenuOption";
 import { TableAdvancedFilterPanel } from "../TableAdvancedFilterPanel/TableAdvancedFilterPanel";
+import { TableColumnConfigPanel } from "../TableColumnConfigPanel/TableColumnConfigPanel";
 import { Input } from "../Input/Input";
 import { Button } from "../Button/Button";
 import { SAMPLE_ROWS, DEFAULT_COLUMNS, money } from "./sampleData";
 import "./DataTable.css";
 
 /**
- * DataTable — matches the "Data table" component set in Figma (10 states), built from the Table/* parts.
+ * DataTable — matches the "Data table" component set in Figma (12 states), built from the Table/* parts.
  * Figma state -> how to get it in code
  *   Default            -> no options
  *   Sorted             -> click a header's sort icon (or initialSort)
  *   Column filter      -> header filter icon or "Filters" (or initialColumnFilters)
- *   Column visibility  -> "Columns" (or initialHidden)
+ *   Column visibility  -> "Configure columns", untick a column (or initialHidden)
+ *   Columns reordered  -> "Configure columns", drag columns, Apply (or initialOrder)
+ *   Hidden columns shown -> "Show hidden columns", or tick them in "Configure columns"
  *   Custom filters     -> "Custom filters" panel (or initialRules)
  *   Column resize      -> drag a header's right edge; double-click it for the width menu
  *   Multi-select       -> row checkboxes (or initialSelected)
@@ -42,6 +45,8 @@ export function DataTable({
   initialSort = null,
   initialColumnFilters = {},
   initialHidden = [],
+  initialOrder = null,
+  initialConfigOpen = false,
   initialRules = [],
   initialMatch = "AND",
   initialSelected = [],
@@ -49,7 +54,8 @@ export function DataTable({
   initialPageSize = 12,
 }) {
   const colByKey = useMemo(() => Object.fromEntries(initialColumns.map((c) => [c.key, c])), [initialColumns]);
-  const [order, setOrder] = useState(initialColumns.map((c) => c.key));
+  const defaultOrder = initialColumns.map((c) => c.key);
+  const [order, setOrder] = useState(initialOrder || defaultOrder);
   const [widths, setWidths] = useState(Object.fromEntries(initialColumns.map((c) => [c.key, c.width])));
   const [hidden, setHidden] = useState(new Set(initialHidden));
   const [rowOrder, setRowOrder] = useState(initialRows.map((r) => r.id));
@@ -72,6 +78,10 @@ export function DataTable({
   const [dragRow, setDragRow] = useState(null);
   const [overRow, setOverRow] = useState(null);
   const [dragCol, setDragCol] = useState(null);
+  const [configOpen, setConfigOpen] = useState(initialConfigOpen);
+  const [draftOrder, setDraftOrder] = useState(initialOrder || defaultOrder);
+  const [draftHidden, setDraftHidden] = useState(new Set(initialHidden));
+  const [columnNote, setColumnNote] = useState(null);
   const [overCol, setOverCol] = useState(null);
   const headerRefs = useRef({});
   const gridRef = useRef(null);
@@ -187,6 +197,42 @@ export function DataTable({
     setOrder(n);
   };
 
+  // ---------- configure columns ----------
+  const sameOrder = (a, b) => a.length === b.length && a.every((k, i) => k === b[i]);
+  const describeColumns = (prevOrder, prevHidden, nextOrder, nextHidden) => {
+    const parts = [];
+    const moved = nextOrder.find((k, i) => prevOrder.indexOf(k) !== i && prevOrder.indexOf(k) - i !== -1 && prevOrder.indexOf(k) - i !== 1)
+      || nextOrder.find((k, i) => prevOrder.indexOf(k) > i);
+    if (moved && !sameOrder(prevOrder, nextOrder)) parts.push(`${colByKey[moved].title} moved to position ${nextOrder.indexOf(moved) + 1}`);
+    const nowHidden = nextOrder.filter((k) => nextHidden.has(k) && !prevHidden.has(k)).map((k) => colByKey[k].title);
+    const restored = nextOrder.filter((k) => !nextHidden.has(k) && prevHidden.has(k)).map((k) => colByKey[k].title);
+    if (nextHidden.size === 0 && restored.length) parts.unshift(`All ${nextOrder.length} columns visible`);
+    if (restored.length) parts.push(`${restored.join(", ")} restored`);
+    if (nowHidden.length) parts.push(`${nowHidden.join(", ")} hidden`);
+    return parts.join(" · ") || null;
+  };
+  const applyColumns = (nextOrder, nextHidden) => {
+    setColumnNote(describeColumns(order, hidden, nextOrder, nextHidden));
+    setOrder(nextOrder);
+    setHidden(nextHidden);
+  };
+  const openConfig = () => { setDraftOrder(order); setDraftHidden(new Set(hidden)); setMenu(null); setConfigOpen(!configOpen); };
+  const moveDraft = (fromKey, toKey) => {
+    const n = draftOrder.filter((k) => k !== fromKey);
+    const to = draftOrder.indexOf(toKey) > draftOrder.indexOf(fromKey) ? n.indexOf(toKey) + 1 : n.indexOf(toKey);
+    n.splice(to, 0, fromKey);
+    setDraftOrder(n);
+  };
+  const draftNote = (() => {
+    const hiddenTitles = draftOrder.filter((k) => draftHidden.has(k)).map((k) => colByKey[k].title);
+    if (sameOrder(draftOrder, defaultOrder)) return null;
+    if (draftOrder[0] !== defaultOrder[0]) {
+      const first = `${colByKey[draftOrder[0]].title} is now first.`;
+      return hiddenTitles.length ? `${first} ${hiddenTitles.join(", ")} ${hiddenTitles.length > 1 ? "remain" : "remains"} hidden.` : first;
+    }
+    return null;
+  })();
+
   // ---------- groups ----------
   const groupsInOrder = [];
   visibleCols.forEach((c) => {
@@ -232,7 +278,8 @@ export function DataTable({
         onFilters={() => (menu && menu.type === "filter" ? setMenu(null) : openFilter("status"))}
         onCustomFilters={() => { setDraftRules(rules); setDraftMatch(match); setPanelOpen(!panelOpen); }}
         onGroupBy={() => { const opts = [null, "workspace", "owner", "status"]; setGroupBy(opts[(opts.indexOf(groupBy) + 1) % opts.length]); setCollapsed(new Set()); }}
-        onColumns={() => setMenu(menu && menu.type === "columns" ? null : { type: "columns" })}>
+        onShowHidden={() => { applyColumns(order, new Set()); setDraftHidden(new Set()); }}
+        onConfigureColumns={openConfig}>
         {chips.map((c) => <TableFilterChip key={c.id} onRemove={c.remove}>{c.label}</TableFilterChip>)}
       </TableToolbar>
 
@@ -240,7 +287,14 @@ export function DataTable({
         {selected.size > 0 ? (
           <TableBulkSelectionBar count={selected.size} noun={noun} onClear={() => setSelected(new Set())} />
         ) : (
-          <span className="poc-dt__view">All {noun} <span aria-hidden="true">/</span> {activeFilterCount ? `${activeFilterCount} filter${activeFilterCount > 1 ? "s" : ""} applied` : "No filters applied"}</span>
+          columnNote ? (
+            <span className="poc-dt__view poc-dt__view--columns" role="status">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden="true"><rect x="2" y="2.5" width="12" height="11" rx="1.5" /><path d="M2 6h12M6 6v7.5" /></svg>
+              {columnNote}
+            </span>
+          ) : (
+            <span className="poc-dt__view">All {noun} <span aria-hidden="true">/</span> {activeFilterCount ? `${activeFilterCount} filter${activeFilterCount > 1 ? "s" : ""} applied` : "No filters applied"}</span>
+          )
         )}
         <span className="poc-dt__pinned">Headers pinned</span>
       </div>
@@ -331,18 +385,6 @@ export function DataTable({
             </div>
           )}
 
-          {menu && menu.type === "columns" && (
-            <div className="poc-dt__popover poc-dt__popover--right">
-              <TableColumnMenu title="Show columns" note={`${visibleCols.length} of ${order.length} data columns shown`} onClose={() => setMenu(null)}
-                footer={<Button variant="secondary" onClick={() => setHidden(new Set())}>Restore defaults</Button>}>
-                {order.map((k) => (
-                  <TableMenuOption key={k} label={colByKey[k].title} showDetail={false} selected={!hidden.has(k)} disabled={k === "account"}
-                    onSelect={() => { const n = new Set(hidden); n.has(k) ? n.delete(k) : n.add(k); setHidden(n); }} />
-                ))}
-              </TableColumnMenu>
-            </div>
-          )}
-
           {menu && menu.type === "width" && (
             <div className="poc-dt__popover" style={{ left: menu.left }}>
               <TableColumnMenu title={`${colByKey[menu.key].title} column`} note={`Width · ${widths[menu.key]} px`} onClose={() => setMenu(null)}
@@ -353,6 +395,19 @@ export function DataTable({
                 <TableMenuOption kind="action" label="Decrease width" detail="− 24 px" onSelect={() => setWidths({ ...widths, [menu.key]: Math.max(80, widths[menu.key] - 24) })} />
                 <TableMenuOption kind="action" label="Auto-fit to content" showDetail={false} onSelect={() => setWidths({ ...widths, [menu.key]: colByKey[menu.key].width })} />
               </TableColumnMenu>
+            </div>
+          )}
+          {configOpen && (
+            <div className="poc-dt__config">
+              <TableColumnConfigPanel
+                columns={draftOrder.map((k) => ({ key: k, title: colByKey[k].title, visible: !draftHidden.has(k) }))}
+                defaultOrder={sameOrder(draftOrder, defaultOrder)}
+                note={draftHidden.size ? draftNote : null}
+                onToggle={(k) => { const n = new Set(draftHidden); n.has(k) ? n.delete(k) : n.add(k); setDraftHidden(n); }}
+                onMove={moveDraft}
+                onReset={() => setDraftOrder(defaultOrder)}
+                onApply={() => applyColumns(draftOrder, new Set(draftHidden))}
+                onClose={() => setConfigOpen(false)} />
             </div>
           )}
         </div>

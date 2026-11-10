@@ -27,4 +27,6 @@ export const ColumnResize = { args: {}, parameters: { docs: { description: { sto
 export const MultiSelect = { args: { initialSelected: ["acc-2", "acc-3", "acc-5"] } };
 export const Grouped = { args: { initialGroupBy: "workspace" } };
 export const RowDragging = { args: {}, parameters: { docs: { description: { story: "Drag a row by its handle to reorder (turn off sorting and grouping first)." } } } };
+export const ColumnsReordered = { args: { initialOrder: ["owner", "account", "workspace", "status", "role", "seats", "arr", "renewal"], initialHidden: ["renewal"], initialConfigOpen: true } };
+export const HiddenColumnsShown = { args: { initialOrder: ["owner", "account", "workspace", "status", "role", "seats", "arr", "renewal"], initialConfigOpen: true } };
 export const ColumnDragging = { args: {}, parameters: { docs: { description: { story: "Drag a header by its handle to reorder columns within the same group." } } } };

@@ -1,0 +1,16 @@
+/* TableColumnConfigItem — Figma "Table / Column configuration item": 44px high, 1px border, radius-sm. */
+.poc-tcci {
+  display: flex; align-items: center; gap: var(--spacing-sm);
+  height: 44px; padding: 0 var(--spacing-sm); box-sizing: border-box;
+  list-style: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: "Inter", system-ui, sans-serif;
+}
+.poc-tcci__name { flex: 1 1 0; min-width: 0; font-size: 12px; line-height: 17px; color: var(--color-text); }
+.poc-tcci.is-hidden { background: var(--color-surface-muted); }
+.poc-tcci.is-dragging { background: var(--color-primary-subtle); border-color: var(--color-primary); }
+.poc-tcci.is-drop-target { box-shadow: inset 0 2px 0 var(--color-primary); }
+/* Figma State=Focus */
+.poc-tcci:focus-within { border-color: var(--color-primary); }

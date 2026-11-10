@@ -29,3 +29,11 @@
   border-color: transparent;
   cursor: not-allowed;
 }
+
+/* A disabled secondary button stays an outline button with faded text (Figma toolbar: "Show hidden columns"). */
+.poc-button--secondary:disabled,
+.poc-button--secondary:disabled:hover {
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  border-color: var(--color-border);
+}

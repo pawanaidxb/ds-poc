@@ -17,6 +17,8 @@ export { TableFilterLogic } from "./components/TableFilterLogic/TableFilterLogic
 export { TableFilterRule } from "./components/TableFilterRule/TableFilterRule";
 export { TableMenuOption } from "./components/TableMenuOption/TableMenuOption";
 export { TableColumnMenu } from "./components/TableColumnMenu/TableColumnMenu";
+export { TableColumnConfigItem } from "./components/TableColumnConfigItem/TableColumnConfigItem";
+export { TableColumnConfigPanel } from "./components/TableColumnConfigPanel/TableColumnConfigPanel";
 export { TableColumnGroup } from "./components/TableColumnGroup/TableColumnGroup";
 export { TableGroupRow } from "./components/TableGroupRow/TableGroupRow";
 export { TablePagination } from "./components/TablePagination/TablePagination";
