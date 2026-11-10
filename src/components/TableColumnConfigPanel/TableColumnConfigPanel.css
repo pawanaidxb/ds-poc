@@ -6,7 +6,7 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  font-family: "Inter", system-ui, sans-serif; color: var(--color-text);
+  font-family: var(--font-family-body, "Inter"), system-ui, sans-serif; color: var(--color-text);
 }
 .poc-tccp__head { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-sm); }
 .poc-tccp__title { margin: 0; font-size: 16px; line-height: 21px; font-weight: 600; }

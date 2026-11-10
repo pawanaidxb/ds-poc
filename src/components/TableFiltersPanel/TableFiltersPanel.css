@@ -9,7 +9,7 @@
   border: 1px solid var(--color-border); border-right: 0;
   border-radius: var(--radius-md) 0 0 var(--radius-md);
   overflow: hidden;
-  font-family: "Inter", system-ui, sans-serif; color: var(--color-text);
+  font-family: var(--font-family-body, "Inter"), system-ui, sans-serif; color: var(--color-text);
 }
 .poc-tfp__top { flex: none; display: flex; flex-direction: column; gap: var(--spacing-ml); padding: var(--spacing-ml) var(--spacing-ml) var(--spacing-ms); }
 .poc-tfp__head { display: flex; align-items: center; justify-content: space-between; }

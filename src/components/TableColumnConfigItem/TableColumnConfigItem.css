@@ -6,7 +6,7 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: var(--font-family-body, "Inter"), system-ui, sans-serif;
 }
 .poc-tcci__name { flex: 1 1 0; min-width: 0; font-size: 12px; line-height: 17px; color: var(--color-text); }
 .poc-tcci.is-hidden { background: var(--color-surface-muted); }

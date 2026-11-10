@@ -1,5 +1,5 @@
 /* Dropdown — Figma "Dropdown": label 14/18 medium, gap spacing-sm, helper 12/16. The list floats below the trigger. */
-.poc-dd { position: relative; display: flex; flex-direction: column; gap: var(--spacing-sm); max-width: 100%; font-family: "Inter", system-ui, sans-serif; }
+.poc-dd { position: relative; display: flex; flex-direction: column; gap: var(--spacing-sm); max-width: 100%; font-family: var(--font-family-body, "Inter"), system-ui, sans-serif; }
 .poc-dd__label { font-size: 14px; line-height: 18px; font-weight: 500; color: var(--color-text); }
 .poc-dd__popup { position: relative; z-index: 10; }
 .poc-dd__help { font-size: 12px; line-height: 16px; color: var(--color-text-muted); }

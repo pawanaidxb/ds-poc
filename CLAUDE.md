@@ -28,6 +28,7 @@ Each component folder has exactly these files. Copy the pattern of `src/componen
    - Every colour, spacing and radius is `var(--token)`. Look up the token from `boundVariables` ids in `figma/variables.json`.
    - If Figma uses a raw value with no variable, use `var(--suggested-token-name, <raw value>)` and list it under "Design gaps" in the PR description.
    - Font sizes, weights and line heights may be raw values (no type tokens yet).
+   - Font family always comes from the Brand collection: `var(--font-family-body, "Inter")` for normal text, `var(--font-family-button, "Urbanist")` for button labels, `var(--font-family-heading, "Urbanist")` for headings. Button corners use `var(--radius-button, var(--radius-md))`.
 3. `<Name>.stories.jsx`
    - First line: `import React from "react";`
    - `title: "Components/<Name>"`, argTypes with controls for every prop.

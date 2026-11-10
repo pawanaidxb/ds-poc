@@ -4,7 +4,7 @@
   padding: 0 var(--spacing-sm);
   border-right: 1px solid var(--color-border);
   background: var(--color-surface);
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: var(--font-family-body, "Inter"), system-ui, sans-serif;
   font-size: 11px; line-height: 13px; font-weight: 600;
   color: var(--color-text);
   text-align: left; vertical-align: middle; white-space: nowrap;

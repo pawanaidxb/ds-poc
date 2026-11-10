@@ -1,5 +1,5 @@
 /* DropdownTrigger — Figma "Dropdown / Trigger": 40px (48px with chips), padding spacing-sm x spacing-ms, radius-sm. */
-.poc-ddtrig { position: relative; width: 100%; font-family: "Inter", system-ui, sans-serif; }
+.poc-ddtrig { position: relative; width: 100%; font-family: var(--font-family-body, "Inter"), system-ui, sans-serif; }
 .poc-ddtrig__button {
   display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-sm);
   width: 100%; height: 40px; padding: var(--spacing-sm) var(--spacing-ms); box-sizing: border-box;

@@ -4,7 +4,7 @@
   height: 37px; padding: 0 calc(var(--spacing-10, 10px) + 18px) 0 var(--spacing-10, 10px); /* Figma 10: no token yet */
   background: var(--color-surface); color: var(--color-text);
   border: 1px solid var(--color-border); border-radius: var(--radius-sm);
-  font-family: "Inter", system-ui, sans-serif; font-size: 12px; line-height: 15px;
+  font-family: var(--font-family-body, "Inter"), system-ui, sans-serif; font-size: 12px; line-height: 15px;
   cursor: pointer;
 }
 .poc-tfctl__select:focus { outline: none; border-color: var(--color-primary); }
