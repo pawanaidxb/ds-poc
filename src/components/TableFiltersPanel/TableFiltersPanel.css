@@ -1,10 +1,14 @@
-/* TableFiltersPanel — Figma "Table / Filters panel": 342px, padding spacing-ml, border-left, surface fill.
+/* TableFiltersPanel — Figma "Table / Filters panel": 342px, border top + bottom + left, left corners radius-md, surface fill.
    The header + tabs stay at the top, the buttons stay fixed at the bottom, only the middle scrolls. */
 .poc-tfp {
   width: 344px; flex: none; box-sizing: border-box;
   height: 100%; max-height: 100%; min-height: 0;
   display: flex; flex-direction: column;
-  background: var(--color-surface); border-left: 1px solid var(--color-border);
+  background: var(--color-surface);
+  /* Figma: border on top, bottom and left; left corners use radius/md. */
+  border: 1px solid var(--color-border); border-right: 0;
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  overflow: hidden;
   font-family: "Inter", system-ui, sans-serif; color: var(--color-text);
 }
 .poc-tfp__top { flex: none; display: flex; flex-direction: column; gap: var(--spacing-ml); padding: var(--spacing-ml) var(--spacing-ml) var(--spacing-ms); }
@@ -20,7 +24,10 @@
 }
 .poc-tfp__fields { display: flex; flex-direction: column; gap: var(--spacing-sm); }
 .poc-tfp__fields .poc-dd__label, .poc-tfp__label { font-size: 12px; line-height: 16px; font-weight: 400; color: var(--color-text); }
-.poc-tfp__checklist { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+/* Figma "Role" block: label, search and options 12px apart. */
+.poc-tfp__checklist { display: flex; flex-direction: column; gap: var(--spacing-ms); }
+/* Figma Custom tab content: 18px apart (no variable yet, see design gaps). */
+.poc-tfp__body .poc-tafp--embedded { gap: var(--spacing-18, 18px); }
 /* Fixed footer with the action buttons (Figma divider above "Reset / Apply"). */
 .poc-tfp__footer {
   flex: none; display: flex; align-items: center; gap: var(--spacing-sm);

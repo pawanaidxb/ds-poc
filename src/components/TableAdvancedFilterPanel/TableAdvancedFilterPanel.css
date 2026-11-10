@@ -18,4 +18,4 @@
 .poc-tafp__summary strong { font-size: 12px; line-height: 15px; font-weight: 600; }
 .poc-tafp__actions { display: flex; align-items: center; gap: var(--spacing-sm); }
 .poc-tafp.is-disabled { opacity: 0.4; }
-.poc-tafp--embedded { width: auto; padding: 0; border-left: 0; background: none; }
+.poc-tafp--embedded { width: auto; padding: 0; margin: 0; border: 0; border-radius: 0; background: none; }
