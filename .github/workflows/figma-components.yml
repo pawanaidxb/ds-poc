@@ -38,6 +38,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - name: Check the branch
         run: |
@@ -74,7 +75,7 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          claude_args: "--max-turns 60 --allowedTools Read,Write,Edit,Glob,Grep,Bash(ls:*),Bash(cat:*),Bash(node:*)"
+          claude_args: "--max-turns 200 --allowedTools Read,Write,Edit,Glob,Grep,Bash(ls:*),Bash(cat:*),Bash(node:*),Bash(sed:*),Bash(head:*),Bash(tail:*),Bash(wc:*),Bash(find:*),Bash(diff:*),Bash(mkdir:*),Bash(python3:*)"
           prompt: |
             Read CLAUDE.md first and follow it exactly.
             The latest Figma components are in figma/components/ (index.json lists them; each has a .json structure and a .png picture).
