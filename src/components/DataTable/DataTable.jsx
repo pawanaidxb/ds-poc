@@ -378,7 +378,7 @@ export function DataTable({
         <span className="poc-dt__pinned">Headers pinned</span>
       </div>
 
-      <div className="poc-dt__body">
+      <div className={`poc-dt__body${panelOpen ? " has-filters" : ""}`}>
         <div className="poc-dt__grid" ref={gridRef} style={configHeight ? { minHeight: configHeight - 50 } : undefined}>
           <div className="poc-dt__scroll">
             <table className="poc-dt__table" style={{ width: 44 + visibleCols.reduce((s, c) => s + widths[c.key], 0) }}>
@@ -501,7 +501,7 @@ export function DataTable({
           const fmt = (v) => (col.format ? col.format(col.type === "number" ? Number(v) : v) : v);
           const chosen = draftCol[checkKey] || [];
           return (
-            <TableFiltersPanel tab={filterTab} onTabChange={setFilterTab} onClose={() => setPanelOpen(false)}
+            <div className="poc-dt__filterscol"><TableFiltersPanel tab={filterTab} onTabChange={setFilterTab} onClose={() => setPanelOpen(false)}
               fields={["status", "workspace"].filter((k) => colByKey[k] && k !== checkKey).map((k) => ({
                 key: k, label: colByKey[k].title, placeholder: k === "status" ? "All statuses" : "All workspaces",
                 options: [{ value: "__all", label: k === "status" ? "All statuses" : "All workspaces" }, ...valuesFor(k).map(([v]) => ({ value: v, label: v }))],
@@ -524,7 +524,7 @@ export function DataTable({
                 onAddRule: () => setDraftRules([...draftRules, { id: Date.now(), field: "Status", operator: "is", value: "" }]),
                 onApply: () => { setRules(draftRules); setMatch(draftMatch); setPage(1); },
                 onClear: () => { setDraftRules([]); setRules([]); },
-              }} />
+              }} /></div>
           );
         })()}
       </div>

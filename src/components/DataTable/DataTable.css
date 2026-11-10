@@ -48,3 +48,9 @@
 .poc-dt__view--columns { display: inline-flex; align-items: center; gap: var(--spacing-sm); }
 
 .poc-dt__chips { display: inline-flex; align-items: center; flex-wrap: wrap; gap: var(--spacing-sm); }
+
+/* Filters panel column: as tall as the table beside it (never taller); the panel scrolls inside. */
+.poc-dt__filterscol { position: relative; flex: none; width: 344px; }
+.poc-dt__filterscol > .poc-tfp { position: absolute; inset: 0; width: 100%; }
+/* Give the panel room when only a few rows are shown. */
+.poc-dt__body.has-filters { min-height: 480px; }

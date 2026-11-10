@@ -40,5 +40,11 @@ export default {
   argTypes: { tab: { control: "inline-radio", options: ["general", "custom"] } },
 };
 
-export const GeneralFilters = { render: () => <Demo startTab="general" /> };
-export const CustomFilters = { render: () => <Demo startTab="custom" /> };
+// The panel fills its container's height. Drag the corner of the box to see the content scroll
+// while the buttons stay fixed at the bottom.
+const Box = ({ children, height = 560 }) => (
+  <div style={{ height, width: 344, resize: "vertical", overflow: "hidden", border: "1px dashed var(--color-border)" }}>{children}</div>
+);
+export const GeneralFilters = { render: () => <Box><Demo startTab="general" /></Box> };
+export const CustomFilters = { render: () => <Box><Demo startTab="custom" /></Box> };
+export const ShortContainer = { name: "Short container (scrolls)", render: () => <Box height={360}><Demo startTab="custom" /></Box> };
