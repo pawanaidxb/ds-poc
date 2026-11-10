@@ -1042,8 +1042,8 @@ Matches "Table / Filters panel" in Figma (147:7711).
 
 - Import: `import { TableFiltersPanel } from "ds-poc";` (file `src/components/TableFiltersPanel/TableFiltersPanel.jsx`)
 - Built from: `Button`, `Input`, `Dropdown`, `TableMenuOption`, `TableAdvancedFilterPanel`
-- Storybook stories: GeneralFilters, CustomFilters
-- Tokens used: `--spacing-ml` `--color-surface` `--color-border` `--color-text` `--color-text-muted` `--spacing-sm` `--spacing-ms`
+- Storybook stories: GeneralFilters, CustomFilters, ShortContainer
+- Tokens used: `--color-surface` `--color-border` `--color-text` `--spacing-ml` `--spacing-ms` `--color-text-muted` `--spacing-sm` `--spacing-xs`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -1066,6 +1066,8 @@ Figma to code:
 - checklist: { title, values: [{ value, label, count }], selected: [...], total, query, onQueryChange, onToggle(value), onToggleAll }
 - onReset · onApply
 - Custom tab: custom = the props for TableAdvancedFilterPanel (rules, match, matchCount, summary, on... handlers)
+- Layout: the header and tabs stay at the top, the action buttons stay fixed at the bottom,
+- and only the content in between scrolls. The panel fills the height of its container.
 
 ```jsx
 <TableFiltersPanel />
@@ -1095,12 +1097,14 @@ Matches "Table / Advanced filter panel" in Figma.
 | `onClear` | — | function |
 | `onClose` | — | function |
 | `showHeader` | `true` | `true` · `false` |
+| `showActions` | `true` | `true` · `false` |
 
 Figma to code:
 
 - State=Default/Disabled -> disabled
 - rules: [{ id, kind: "text"|"number", field, operator, value }]
 - (code only) showHeader=false -> no title or close button, for use inside the Data table "Filters" panel tab
+- (code only) showActions=false -> no Apply filters / Clear all row (the Filters panel shows them in its fixed footer)
 
 ```jsx
 <TableAdvancedFilterPanel />
