@@ -2,7 +2,7 @@
 
 Generated from the code and `tokens.json` on every push. Do not edit by hand: change Figma or the components, then push.
 
-- 24 tokens (Light and Dark) · 28 components · package `ds-poc`
+- 24 tokens (Light and Dark) · 33 components · package `ds-poc`
 - Live examples: Storybook (Components and Table sections)
 
 ## How to build UI with this design system (read first, AI tools included)
@@ -71,6 +71,10 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 | [`Input`](#input) | Input | Core |
 | [`Checkbox`](#checkbox) | Checkbox | Core |
 | [`Radio`](#radio) | Radio | Core |
+| [`Dropdown`](#dropdown) | Dropdown | Core |
+| [`DropdownTrigger`](#dropdowntrigger) | Dropdown / Trigger | Core |
+| [`DropdownList`](#dropdownlist) | Dropdown / List | Core |
+| [`DropdownOption`](#dropdownoption) | Dropdown / Option | Core |
 | [`TableCheckbox`](#tablecheckbox) | Table / Checkbox | Table |
 | [`TableDragHandle`](#tabledraghandle) | Table / Drag handle | Table |
 | [`TableSelectionCell`](#tableselectioncell) | Table / Selection cell | Table |
@@ -85,6 +89,7 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 | [`TableColumnMenu`](#tablecolumnmenu) | Table / Column menu | Table |
 | [`TableColumnConfigItem`](#tablecolumnconfigitem) | Table / Column configuration item | Table |
 | [`TableColumnConfigPanel`](#tablecolumnconfigpanel) | Table / Column configuration panel | Table |
+| [`TableConfigGroupHeader`](#tableconfiggroupheader) | Table / Configuration group header | Table |
 | [`TableColumnGroup`](#tablecolumngroup) | Table / Column group | Table |
 | [`TableGroupRow`](#tablegrouprow) | Table / Group row | Table |
 | [`TablePagination`](#tablepagination) | Table / Pagination | Table |
@@ -102,12 +107,14 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 Matches the "Button" component in Figma.
 
 - Import: `import { Button } from "ds-poc";` (file `src/components/Button/Button.jsx`)
-- Storybook stories: Primary, Secondary, Disabled, AllStates
-- Tokens used: `--spacing-sm` `--spacing-md` `--radius-md` `--color-primary` `--color-on-primary` `--color-primary-hover` `--color-surface` `--color-text` `--color-border` `--color-icon` `--color-text-muted`
+- Storybook stories: Primary, Secondary, Disabled, LeftIcon, RightIcon, IconOnly, AllStates
+- Tokens used: `--spacing-sm` `--spacing-md` `--radius-md` `--color-primary` `--color-on-primary` `--color-primary-hover` `--color-surface` `--color-text` `--color-border` `--color-icon`
 
 | Prop | Default | Options |
 | --- | --- | --- |
 | `variant` | `"primary"` | `primary` · `secondary` |
+| `layout` | `"text"` | `text` · `left-icon` · `right-icon` · `icon-only` |
+| `icon` | — |  |
 | `disabled` | `false` | `true` · `false` |
 | `children` | `"Button"` |  |
 
@@ -115,7 +122,11 @@ Figma to code:
 
 - Figma property "Type" (Primary / Secondary)  ->  prop "variant"
 - Figma property "Type" = Disabled             ->  prop "disabled" (true)
+- Figma property "Layout"                      ->  prop "layout"
+- Text only -> "text" · Left icon -> "left-icon" · Right icon -> "right-icon" · Icon only -> "icon-only"
+- Figma "Icon / Arrow right"                   ->  prop "icon" (any icon; the arrow is the default)
 - Figma property "Label" (text)                ->  prop "children"
+- With layout="icon-only" the label is not shown but stays the button's accessible name (Figma note).
 - Hover -> real browser state, no prop needed
 
 ```jsx
@@ -244,6 +255,151 @@ Figma to code:
 
 ```jsx
 <Radio checked={false} readOnly />
+```
+
+#### Dropdown
+
+Matches "Dropdown" in Figma (130:6713): label, trigger, list and helper text.
+
+- Import: `import { Dropdown } from "ds-poc";` (file `src/components/Dropdown/Dropdown.jsx`)
+- Built from: `DropdownTrigger`, `DropdownList`
+- Storybook stories: Default, Selected, Open, ErrorState, Disabled, MultipleSelected, MultipleOpen, AllStates
+- Tokens used: `--spacing-sm` `--color-text` `--color-text-muted` `--color-danger`
+
+| Prop | Default | Options |
+| --- | --- | --- |
+| `label` | `"Team"` |  |
+| `helperText` | `"Set team access for this workspace."` |  |
+| `showHelper` | `true` | `true` · `false` |
+| `errorMessage` | `"Select a team to continue."` |  |
+| `error` | `false` | `true` · `false` |
+| `disabled` | `false` | `true` · `false` |
+| `selection` | `"single"` | `single` · `multiple` |
+| `options` | `DEFAULT_OPTIONS` |  |
+| `placeholder` | — |  |
+| `searchPlaceholder` | `"Search teams…"` |  |
+| `noun` | `"team"` |  |
+| `nounPlural` | — |  |
+| `value` | — |  |
+| `defaultValue` | — |  |
+| `onChange` | — | function |
+| `defaultOpen` | `false` | `true` · `false` |
+| `width` | `320` |  |
+
+Figma to code:
+
+- Label (text) -> label · Helper text (text) -> helperText · Show helper (boolean) -> showHelper
+- Selection=Single/Multiple -> selection = "single" | "multiple"
+- State=Default / Selected  -> no value / a value (value or defaultValue)
+- State=Open                -> click the trigger (or defaultOpen)
+- State=Error               -> error + errorMessage · State=Disabled -> disabled
+- options: [{ value, label, disabled }] · value: a value (single) or an array (multiple)
+- Works controlled (value + onChange) or on its own (defaultValue). Esc or a click outside closes it.
+
+```jsx
+<Dropdown selection="single" />
+```
+
+#### DropdownTrigger
+
+Matches "Dropdown / Trigger" in Figma (130:6371).
+
+- Import: `import { DropdownTrigger } from "ds-poc";` (file `src/components/DropdownTrigger/DropdownTrigger.jsx`)
+- Built from: `TableFilterChip`
+- Storybook stories: Default, Selected, Open, ErrorState, Disabled, MultipleSelected
+- Tokens used: `--spacing-sm` `--spacing-ms` `--color-surface` `--color-text` `--color-border` `--radius-sm` `--color-text-muted` `--spacing-xs` `--color-primary` `--color-danger` `--color-surface-muted`
+
+| Prop | Default | Options |
+| --- | --- | --- |
+| `placeholder` | `"Select a team"` |  |
+| `value` | — |  |
+| `selection` | `"single"` | `single` · `multiple` |
+| `open` | `false` | `true` · `false` |
+| `error` | `false` | `true` · `false` |
+| `disabled` | `false` | `true` · `false` |
+| `onRemove` | — | function |
+
+Figma to code:
+
+- Placeholder (text)        -> placeholder
+- Value (text)              -> value (single: a string · multiple: an array of labels, shown as chips)
+- Selection=Single/Multiple -> selection = "single" | "multiple"
+- State=Default / Selected  -> no value / a value
+- State=Open                -> open (2px primary border, caret flips)
+- State=Error               -> error · State=Disabled -> disabled
+- Removing a chip           -> onRemove(label)
+
+```jsx
+<DropdownTrigger selection="single" />
+```
+
+#### DropdownList
+
+Matches "Dropdown / List" in Figma (130:6463).
+
+- Import: `import { DropdownList } from "ds-poc";` (file `src/components/DropdownList/DropdownList.jsx`)
+- Built from: `Input`, `Button`, `DropdownOption`
+- Storybook stories: SingleOptions, MultipleOptions, SingleEmpty, MultipleEmpty
+- Tokens used: `--spacing-sm` `--spacing-ms` `--color-surface` `--color-border` `--radius-sm` `--shadow-dropdown` `--spacing-lg` `--color-text` `--color-text-muted`
+
+| Prop | Default | Options |
+| --- | --- | --- |
+| `options` | `[]` |  |
+| `selected` | `[]` |  |
+| `selection` | `"single"` | `single` · `multiple` |
+| `query` | `""` |  |
+| `onQueryChange` | — | function |
+| `onToggle` | — | function |
+| `onClear` | — | function |
+| `searchPlaceholder` | `"Search teams…"` |  |
+| `noun` | `"team"` |  |
+| `nounPlural` | — |  |
+| `emptyTitle` | — |  |
+| `emptyText` | `"Try a different search."` |  |
+| `id` | — |  |
+| `searchable` | `true` | `true` · `false` |
+| `showSummary` | `true` | `true` · `false` |
+
+Figma to code:
+
+- Selection=Single/Multiple -> selection = "single" | "multiple"
+- Results=Options / Empty   -> options that match the search / none ("No teams found")
+- options: [{ value, label, disabled }] · selected: array of values
+- Search box -> query + onQueryChange · Clear -> onClear · picking -> onToggle(value)
+- noun / nounPlural -> "1 team selected" / "2 teams selected"
+- (code only) searchable / showSummary -> hide the search box or the summary row (e.g. the toolbar "Group by" list)
+
+```jsx
+<DropdownList selection="single" selected={["design"]} />
+```
+
+#### DropdownOption
+
+Matches "Dropdown / Option" in Figma (130:6230).
+
+- Import: `import { DropdownOption } from "ds-poc";` (file `src/components/DropdownOption/DropdownOption.jsx`)
+- Built from: `TableCheckbox`
+- Storybook stories: Default, Selected, Disabled, MultipleSelected, AllStates
+- Tokens used: `--spacing-sm` `--spacing-ms` `--radius-sm` `--color-surface` `--color-text` `--color-primary` `--color-surface-muted` `--color-primary-subtle` `--color-text-muted`
+
+| Prop | Default | Options |
+| --- | --- | --- |
+| `label` | `"Design"` |  |
+| `selection` | `"single"` | `single` · `multiple` |
+| `selected` | `false` | `true` · `false` |
+| `disabled` | `false` | `true` · `false` |
+| `onSelect` | — | function |
+
+Figma to code:
+
+- Label (text)              -> label
+- Selection=Single/Multiple -> selection = "single" | "multiple" (multiple shows a checkbox)
+- State=Selected            -> selected (single shows a tick on the right)
+- State=Disabled            -> disabled
+- State=Hover / Focus / Selected focus -> real browser states (:hover, :focus-visible)
+
+```jsx
+<DropdownOption selection="single" />
 ```
 
 ### Table components
@@ -590,6 +746,7 @@ Matches "Table / Column configuration item" in Figma (122:4361).
 | `visible` | `true` | `true` · `false` |
 | `dragging` | `false` | `true` · `false` |
 | `dropTarget` | `false` | `true` · `false` |
+| `size` | `"default"` |  |
 | `onToggle` | — | function |
 | `onMoveUp` | — | function |
 | `onMoveDown` | — | function |
@@ -602,6 +759,7 @@ Figma to code:
 - State=Hidden        -> visible = false
 - State=Dragging      -> dragging
 - State=Focus         -> real browser focus (:focus-within), no prop
+- (code only) size="compact" -> 32px high, as used inside a column group in Figma
 - Keyboard: Alt + Arrow Up / Down moves the column (onMoveUp / onMoveDown), Space toggles the checkbox.
 
 ```jsx
@@ -613,15 +771,19 @@ Figma to code:
 Matches "Table / Column configuration panel" in Figma (122:4746).
 
 - Import: `import { TableColumnConfigPanel } from "ds-poc";` (file `src/components/TableColumnConfigPanel/TableColumnConfigPanel.jsx`)
-- Built from: `Input`, `Button`, `TableColumnConfigItem`
-- Storybook stories: Configure, Reordered, AllVisible
-- Tokens used: `--spacing-ms` `--spacing-ml` `--color-surface` `--color-border` `--radius-md` `--color-text` `--spacing-sm` `--color-text-muted` `--spacing-xs`
+- Built from: `Input`, `Button`, `DropdownList`, `TableColumnConfigItem`, `TableConfigGroupHeader`
+- Storybook stories: Configure, Reordered, AllVisible, ColumnGroups, NewGroup, Ungrouped
+- Tokens used: `--spacing-ms` `--spacing-ml` `--color-surface` `--color-border` `--radius-md` `--color-text` `--spacing-sm` `--color-text-muted` `--spacing-xs` `--color-surface-muted` `--radius-sm` `--color-primary`
 
 | Prop | Default | Options |
 | --- | --- | --- |
 | `columns` | `[]` |  |
 | `defaultOrder` | `true` | `true` · `false` |
 | `note` | — |  |
+| `view` | `"columns"` |  |
+| `onViewChange` | — | function |
+| `groups` | `[]` |  |
+| `onGroupsChange` | — | function |
 | `onToggle` | — | function |
 | `onMove` | — | function |
 | `onReset` | — | function |
@@ -630,15 +792,58 @@ Matches "Table / Column configuration panel" in Figma (122:4746).
 
 Figma to code:
 
-- Mode=Configure    -> columns in their default order (defaultOrder = true)
-- Mode=Reordered    -> columns in a custom order (defaultOrder = false)
-- Mode=All visible  -> every column has visible = true
+- Mode=Configure / Reordered / All visible -> view="columns" (defaultOrder, and every column visible or not)
+- Mode=Column groups -> view="groups"
+- Mode=New group     -> view="groups" with a group that has draft: true (name field, "Add columns")
+- Mode=Ungrouped     -> view="groups" with no groups (every column under "Ungrouped")
+- "Columns" / "Groups" tabs -> view + onViewChange
 - columns: [{ key, title, visible }] in the order shown.
-- Drag an item (or Alt + Arrow keys) -> onMove(fromKey, toKey). Tick -> onToggle(key).
-- "Find a column…" filters the list. Reset order -> onReset. Apply columns -> onApply.
+- groups:  [{ id, name, keys: [...], draft }] in the order shown. Columns in no group are "Ungrouped".
+- Columns view: drag (or Alt + Arrow keys) -> onMove(fromKey, toKey) · tick -> onToggle(key)
+- Groups view: every change -> onGroupsChange(nextGroups) (drag columns between groups, drag groups,
+- Add group, Add columns, Ungroup, Ungroup all, rename / cancel a new group)
+- Reset order -> onReset · Apply columns -> onApply (disabled while a new group has no columns)
 
 ```jsx
 <TableColumnConfigPanel />
+```
+
+#### TableConfigGroupHeader
+
+Matches "Table / Configuration group header" in Figma (134:7689).
+
+- Import: `import { TableConfigGroupHeader } from "ds-poc";` (file `src/components/TableConfigGroupHeader/TableConfigGroupHeader.jsx`)
+- Built from: `TableDragHandle`, `Input`, `Button`
+- Storybook stories: Default, Editing, Ungrouped
+- Tokens used: `--spacing-sm` `--color-surface` `--color-text-muted` `--color-text`
+
+| Prop | Default | Options |
+| --- | --- | --- |
+| `groupName` | `"Account details"` |  |
+| `columnCount` | `3` |  |
+| `editing` | `false` | `true` · `false` |
+| `expanded` | `true` | `true` · `false` |
+| `showDragHandle` | `true` | `true` · `false` |
+| `showDisclosure` | `true` | `true` · `false` |
+| `showActions` | `true` | `true` · `false` |
+| `onToggle` | — | function |
+| `onAddColumns` | — | function |
+| `onUngroup` | — | function |
+| `onNameChange` | — | function |
+| `onCancel` | — | function |
+| `dragHandleProps` | `{}` |  |
+
+Figma to code:
+
+- Group name (text)       -> groupName
+- Column count (text)     -> columnCount
+- State=Default           -> name + count + "Add columns" / "Ungroup"
+- State=Editing           -> editing: a name field + "Cancel" (onNameChange, onCancel)
+- Show drag handle / disclosure / actions (booleans) -> showDragHandle, showDisclosure, showActions
+- Disclosure open/closed  -> expanded + onToggle
+
+```jsx
+<TableConfigGroupHeader groupName="Account details" columnCount={3} />
 ```
 
 #### TableColumnGroup
@@ -717,37 +922,40 @@ Figma to code:
 
 #### TableToolbar
 
-Matches "Table / Toolbar" in Figma.
+Matches "Table / Toolbar" as used in every "Data table" state in Figma.
 
 - Import: `import { TableToolbar } from "ds-poc";` (file `src/components/TableToolbar/TableToolbar.jsx`)
-- Built from: `Input`, `Button`
-- Storybook stories: Default, ColumnFilter, CustomFilters, ColumnVisibility, Grouped
-- Tokens used: `--spacing-sm` `--spacing-14` `--spacing-lg` `--color-surface-muted` `--color-border` `--color-text-muted` `--color-surface`
+- Built from: `Input`, `Button`, `DropdownTrigger`, `DropdownList`
+- Storybook stories: Default, ColumnFilter, CustomFilters, ColumnVisibility, HiddenColumnsShown, Grouped, GroupByDropdown
+- Tokens used: `--spacing-sm` `--spacing-14` `--spacing-lg` `--color-surface-muted` `--color-border` `--color-text-muted` `--color-surface` `--spacing-xs` `--color-icon` `--radius-md` `--color-border-strong` `--color-primary`
 
 | Prop | Default | Options |
 | --- | --- | --- |
 | `search` | `""` |  |
 | `onSearch` | — | function |
-| `filterCount` | `0` |  |
-| `groupBy` | — |  |
 | `visibleColumns` | — |  |
 | `totalColumns` | — |  |
-| `onFilters` | — | function |
-| `onCustomFilters` | — | function |
-| `onGroupBy` | — | function |
-| `onShowHidden` | — | function |
+| `peek` | `false` | `true` · `false` |
+| `onTogglePeek` | — | function |
+| `groupBy` | `null` |  |
+| `groupByOptions` | `GROUP_OPTIONS` |  |
+| `onGroupByChange` | — | function |
+| `defaultGroupByOpen` | `false` | `true` · `false` |
+| `configureOpen` | `false` | `true` · `false` |
 | `onConfigureColumns` | — | function |
-| `onColumns` | — | function |
+| `filterCount` | `0` |  |
+| `filtersOpen` | `false` | `true` · `false` |
+| `onFilters` | — | function |
 | `children` | — |  |
 
 Figma to code:
 
-- State=Default / Column filter / Custom filters -> filterCount (shows "Filters · n")
-- State=Column visibility -> visibleColumns + totalColumns ("7 of 8 columns")
-- "Show hidden columns" -> onShowHidden (disabled when nothing is hidden)
-- "Configure columns" -> onConfigureColumns (opens TableColumnConfigPanel)
-- State=Grouped -> groupBy ("Group by · Workspace")
-- Uses the real Input and Button components.
+- Search accounts… -> search + onSearch
+- Column status    -> "All columns visible" / "7 of 8 columns" / "8 shown · 7 configured" (visibleColumns, totalColumns, peek)
+- Group by: None   -> a Dropdown (groupBy + groupByOptions + onGroupByChange). Figma state "Group by dropdown" = open.
+- Eye icon         -> show hidden columns for now (peek + onTogglePeek; disabled when nothing is hidden)
+- Columns icon     -> onConfigureColumns (configureOpen marks it pressed)
+- Filters · n      -> filterCount + onFilters (filtersOpen marks it pressed)
 
 ```jsx
 <TableToolbar filterCount={1} />
@@ -848,11 +1056,13 @@ Matches "Table / Advanced filter panel" in Figma.
 | `onApply` | — | function |
 | `onClear` | — | function |
 | `onClose` | — | function |
+| `showHeader` | `true` | `true` · `false` |
 
 Figma to code:
 
 - State=Default/Disabled -> disabled
 - rules: [{ id, kind: "text"|"number", field, operator, value }]
+- (code only) showHeader=false -> no title or close button, for use inside the Data table "Filters" panel tab
 
 ```jsx
 <TableAdvancedFilterPanel />
@@ -860,12 +1070,12 @@ Figma to code:
 
 #### DataTable
 
-Matches the "Data table" component set in Figma (12 states), built from the Table/* parts.
+Matches the "Data table" component set in Figma (15 states), built from the Table/* parts.
 
 - Import: `import { DataTable } from "ds-poc";` (file `src/components/DataTable/DataTable.jsx`)
-- Built from: `TableToolbar`, `TableFilterChip`, `TableColumnGroup`, `TableHeaderCell`, `TableCheckbox`, `TableSelectionCell`, `TableCell`, `TableRow`, `TableGroupRow`, `TablePagination`, `TableBulkSelectionBar`, `TableColumnMenu`, `TableMenuOption`, `TableAdvancedFilterPanel`, `TableColumnConfigPanel`, `Input`, `Button`
-- Storybook stories: Default, Sorted, ColumnFilter, ColumnVisibility, CustomFilters, ColumnResize, MultiSelect, Grouped, RowDragging, ColumnsReordered, HiddenColumnsShown, ColumnDragging
-- Tokens used: `--color-surface` `--color-text` `--color-border` `--radius-md` `--spacing-md` `--spacing-lg` `--spacing-ml` `--spacing-2xs` `--color-text-muted` `--radius-sm` `--color-surface-sunken` `--color-surface-muted` `--color-primary-subtle` `--spacing-xs` `--spacing-sm` `--color-primary` `--spacing-14` `--color-icon` `--shadow-popover`
+- Built from: `TableToolbar`, `TableFilterChip`, `TableColumnGroup`, `TableHeaderCell`, `TableCheckbox`, `TableSelectionCell`, `TableCell`, `TableRow`, `TableGroupRow`, `TablePagination`, `TableBulkSelectionBar`, `TableColumnMenu`, `TableMenuOption`, `TableAdvancedFilterPanel`, `TableColumnConfigPanel`, `Dropdown`, `Input`, `Button`
+- Storybook stories: Default, Sorted, ColumnFilter, ColumnVisibility, CustomFilters, ColumnResize, MultiSelect, Grouped, RowDragging, ColumnsReordered, HiddenColumnsShown, HiddenColumnsShownDefaultOrder, GroupByDropdown, ColumnGroupsConfiguration, ColumnDragging
+- Tokens used: `--color-surface` `--color-text` `--color-border` `--radius-md` `--spacing-md` `--spacing-lg` `--spacing-ml` `--spacing-2xs` `--color-text-muted` `--radius-sm` `--color-surface-sunken` `--color-surface-muted` `--color-primary-subtle` `--spacing-xs` `--spacing-sm` `--color-primary` `--spacing-14` `--color-icon` `--shadow-popover` `--spacing-ms`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -880,6 +1090,10 @@ Matches the "Data table" component set in Figma (12 states), built from the Tabl
 | `initialHidden` | `[]` |  |
 | `initialOrder` | `null` |  |
 | `initialConfigOpen` | `false` | `true` · `false` |
+| `initialConfigView` | `"columns"` |  |
+| `initialPeek` | `false` | `true` · `false` |
+| `initialFiltersOpen` | `false` | `true` · `false` |
+| `initialGroupByOpen` | `false` | `true` · `false` |
 | `initialRules` | `[]` |  |
 | `initialMatch` | `"AND"` |  |
 | `initialSelected` | `[]` |  |
@@ -894,7 +1108,11 @@ Figma to code:
 - Column filter      -> header filter icon or "Filters" (or initialColumnFilters)
 - Column visibility  -> "Configure columns", untick a column (or initialHidden)
 - Columns reordered  -> "Configure columns", drag columns, Apply (or initialOrder)
-- Hidden columns shown -> "Show hidden columns", or tick them in "Configure columns"
+- Hidden columns shown -> tick them in "Configure columns" and Apply
+- Hidden columns shown - default order -> the eye button: shows hidden columns for now, saved setup unchanged (or initialPeek)
+- Group by dropdown  -> the "Group by" dropdown in the toolbar (or initialGroupBy)
+- Column groups configuration -> "Configure columns" > Groups (or initialConfigView="groups")
+- Column filter / Custom filters -> "Filters" opens the side panel: General filters / Custom filters tabs
 - Custom filters     -> "Custom filters" panel (or initialRules)
 - Column resize      -> drag a header's right edge; double-click it for the width menu
 - Multi-select       -> row checkboxes (or initialSelected)
