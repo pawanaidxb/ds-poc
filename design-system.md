@@ -2,7 +2,7 @@
 
 Generated from the code and `tokens.json` on every push. Do not edit by hand: change Figma or the components, then push.
 
-- 24 tokens (Light and Dark) · 26 components · package `ds-poc`
+- 24 tokens (Light and Dark) · 28 components · package `ds-poc`
 - Live examples: Storybook (Components and Table sections)
 
 ## How to build UI with this design system (read first, AI tools included)
@@ -83,6 +83,8 @@ Generated from the code and `tokens.json` on every push. Do not edit by hand: ch
 | [`TableFilterRule`](#tablefilterrule) | Table / Filter rule | Table |
 | [`TableMenuOption`](#tablemenuoption) | Table / Menu option | Table |
 | [`TableColumnMenu`](#tablecolumnmenu) | Table / Column menu | Table |
+| [`TableColumnConfigItem`](#tablecolumnconfigitem) | Table / Column configuration item | Table |
+| [`TableColumnConfigPanel`](#tablecolumnconfigpanel) | Table / Column configuration panel | Table |
 | [`TableColumnGroup`](#tablecolumngroup) | Table / Column group | Table |
 | [`TableGroupRow`](#tablegrouprow) | Table / Group row | Table |
 | [`TablePagination`](#tablepagination) | Table / Pagination | Table |
@@ -101,7 +103,7 @@ Matches the "Button" component in Figma.
 
 - Import: `import { Button } from "ds-poc";` (file `src/components/Button/Button.jsx`)
 - Storybook stories: Primary, Secondary, Disabled, AllStates
-- Tokens used: `--spacing-sm` `--spacing-md` `--radius-md` `--color-primary` `--color-on-primary` `--color-primary-hover` `--color-surface` `--color-text` `--color-border` `--color-icon`
+- Tokens used: `--spacing-sm` `--spacing-md` `--radius-md` `--color-primary` `--color-on-primary` `--color-primary-hover` `--color-surface` `--color-text` `--color-border` `--color-icon` `--color-text-muted`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -573,6 +575,72 @@ Figma to code:
 <TableColumnMenu />
 ```
 
+#### TableColumnConfigItem
+
+Matches "Table / Column configuration item" in Figma (122:4361).
+
+- Import: `import { TableColumnConfigItem } from "ds-poc";` (file `src/components/TableColumnConfigItem/TableColumnConfigItem.jsx`)
+- Built from: `TableDragHandle`, `TableCheckbox`
+- Storybook stories: Visible, Hidden, Dragging, AllStates
+- Tokens used: `--spacing-sm` `--color-surface` `--color-border` `--radius-sm` `--color-text` `--color-surface-muted` `--color-primary-subtle` `--color-primary`
+
+| Prop | Default | Options |
+| --- | --- | --- |
+| `columnName` | `"Account"` |  |
+| `visible` | `true` | `true` · `false` |
+| `dragging` | `false` | `true` · `false` |
+| `dropTarget` | `false` | `true` · `false` |
+| `onToggle` | — | function |
+| `onMoveUp` | — | function |
+| `onMoveDown` | — | function |
+| `dragHandleProps` | `{}` |  |
+
+Figma to code:
+
+- Column name (text)  -> columnName
+- State=Visible       -> visible = true
+- State=Hidden        -> visible = false
+- State=Dragging      -> dragging
+- State=Focus         -> real browser focus (:focus-within), no prop
+- Keyboard: Alt + Arrow Up / Down moves the column (onMoveUp / onMoveDown), Space toggles the checkbox.
+
+```jsx
+<TableColumnConfigItem columnName="Account" visible />
+```
+
+#### TableColumnConfigPanel
+
+Matches "Table / Column configuration panel" in Figma (122:4746).
+
+- Import: `import { TableColumnConfigPanel } from "ds-poc";` (file `src/components/TableColumnConfigPanel/TableColumnConfigPanel.jsx`)
+- Built from: `Input`, `Button`, `TableColumnConfigItem`
+- Storybook stories: Configure, Reordered, AllVisible
+- Tokens used: `--spacing-ms` `--spacing-ml` `--color-surface` `--color-border` `--radius-md` `--color-text` `--spacing-sm` `--color-text-muted` `--spacing-xs`
+
+| Prop | Default | Options |
+| --- | --- | --- |
+| `columns` | `[]` |  |
+| `defaultOrder` | `true` | `true` · `false` |
+| `note` | — |  |
+| `onToggle` | — | function |
+| `onMove` | — | function |
+| `onReset` | — | function |
+| `onApply` | — | function |
+| `onClose` | — | function |
+
+Figma to code:
+
+- Mode=Configure    -> columns in their default order (defaultOrder = true)
+- Mode=Reordered    -> columns in a custom order (defaultOrder = false)
+- Mode=All visible  -> every column has visible = true
+- columns: [{ key, title, visible }] in the order shown.
+- Drag an item (or Alt + Arrow keys) -> onMove(fromKey, toKey). Tick -> onToggle(key).
+- "Find a column…" filters the list. Reset order -> onReset. Apply columns -> onApply.
+
+```jsx
+<TableColumnConfigPanel />
+```
+
 #### TableColumnGroup
 
 Matches "Table / Column group" in Figma: a header that spans several columns.
@@ -667,6 +735,8 @@ Matches "Table / Toolbar" in Figma.
 | `onFilters` | — | function |
 | `onCustomFilters` | — | function |
 | `onGroupBy` | — | function |
+| `onShowHidden` | — | function |
+| `onConfigureColumns` | — | function |
 | `onColumns` | — | function |
 | `children` | — |  |
 
@@ -674,6 +744,8 @@ Figma to code:
 
 - State=Default / Column filter / Custom filters -> filterCount (shows "Filters · n")
 - State=Column visibility -> visibleColumns + totalColumns ("7 of 8 columns")
+- "Show hidden columns" -> onShowHidden (disabled when nothing is hidden)
+- "Configure columns" -> onConfigureColumns (opens TableColumnConfigPanel)
 - State=Grouped -> groupBy ("Group by · Workspace")
 - Uses the real Input and Button components.
 
@@ -788,12 +860,12 @@ Figma to code:
 
 #### DataTable
 
-Matches the "Data table" component set in Figma (10 states), built from the Table/* parts.
+Matches the "Data table" component set in Figma (12 states), built from the Table/* parts.
 
 - Import: `import { DataTable } from "ds-poc";` (file `src/components/DataTable/DataTable.jsx`)
-- Built from: `TableToolbar`, `TableFilterChip`, `TableColumnGroup`, `TableHeaderCell`, `TableCheckbox`, `TableSelectionCell`, `TableCell`, `TableRow`, `TableGroupRow`, `TablePagination`, `TableBulkSelectionBar`, `TableColumnMenu`, `TableMenuOption`, `TableAdvancedFilterPanel`, `Input`, `Button`
-- Storybook stories: Default, Sorted, ColumnFilter, ColumnVisibility, CustomFilters, ColumnResize, MultiSelect, Grouped, RowDragging, ColumnDragging
-- Tokens used: `--color-surface` `--color-text` `--color-border` `--radius-md` `--spacing-md` `--spacing-lg` `--spacing-ml` `--spacing-2xs` `--color-text-muted` `--radius-sm` `--color-surface-sunken` `--color-surface-muted` `--color-primary-subtle` `--spacing-xs` `--spacing-sm` `--color-primary` `--spacing-14` `--color-icon`
+- Built from: `TableToolbar`, `TableFilterChip`, `TableColumnGroup`, `TableHeaderCell`, `TableCheckbox`, `TableSelectionCell`, `TableCell`, `TableRow`, `TableGroupRow`, `TablePagination`, `TableBulkSelectionBar`, `TableColumnMenu`, `TableMenuOption`, `TableAdvancedFilterPanel`, `TableColumnConfigPanel`, `Input`, `Button`
+- Storybook stories: Default, Sorted, ColumnFilter, ColumnVisibility, CustomFilters, ColumnResize, MultiSelect, Grouped, RowDragging, ColumnsReordered, HiddenColumnsShown, ColumnDragging
+- Tokens used: `--color-surface` `--color-text` `--color-border` `--radius-md` `--spacing-md` `--spacing-lg` `--spacing-ml` `--spacing-2xs` `--color-text-muted` `--radius-sm` `--color-surface-sunken` `--color-surface-muted` `--color-primary-subtle` `--spacing-xs` `--spacing-sm` `--color-primary` `--spacing-14` `--color-icon` `--shadow-popover`
 
 | Prop | Default | Options |
 | --- | --- | --- |
@@ -806,6 +878,8 @@ Matches the "Data table" component set in Figma (10 states), built from the Tabl
 | `initialSort` | `null` |  |
 | `initialColumnFilters` | `{}` |  |
 | `initialHidden` | `[]` |  |
+| `initialOrder` | `null` |  |
+| `initialConfigOpen` | `false` | `true` · `false` |
 | `initialRules` | `[]` |  |
 | `initialMatch` | `"AND"` |  |
 | `initialSelected` | `[]` |  |
@@ -818,7 +892,9 @@ Figma to code:
 - Default            -> no options
 - Sorted             -> click a header's sort icon (or initialSort)
 - Column filter      -> header filter icon or "Filters" (or initialColumnFilters)
-- Column visibility  -> "Columns" (or initialHidden)
+- Column visibility  -> "Configure columns", untick a column (or initialHidden)
+- Columns reordered  -> "Configure columns", drag columns, Apply (or initialOrder)
+- Hidden columns shown -> "Show hidden columns", or tick them in "Configure columns"
 - Custom filters     -> "Custom filters" panel (or initialRules)
 - Column resize      -> drag a header's right edge; double-click it for the width menu
 - Multi-select       -> row checkboxes (or initialSelected)
