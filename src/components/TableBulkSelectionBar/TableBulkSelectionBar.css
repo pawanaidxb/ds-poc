@@ -1,4 +1,4 @@
-.poc-tbulk { display: inline-flex; align-items: center; gap: var(--spacing-sm); font-family: "Inter", system-ui, sans-serif; }
+.poc-tbulk { display: inline-flex; align-items: center; gap: var(--spacing-sm); font-family: var(--font-family-body, "Inter"), system-ui, sans-serif; }
 .poc-tbulk .poc-tcheck__box { border-color: var(--color-primary); }
 .poc-tbulk__count { font-size: 12px; line-height: 15px; font-weight: 600; color: var(--color-primary); }
 .poc-tbulk__clear { padding: 0; background: none; border: 0; font: inherit; font-size: 12px; line-height: 15px; color: var(--color-text-muted); cursor: pointer; }

@@ -1,7 +1,7 @@
 import React from "react";
 
 /**
- * Icons used by the table components, exported from Figma (DS POC).
+ * Shared icons (table, Button, Dropdown), exported from Figma (DS POC).
  * They use currentColor, so the colour comes from a token in CSS.
  */
 export function CheckIcon(props) {
@@ -98,6 +98,35 @@ export function ChevronRightIcon(props) {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" {...props}>
       <path d="M5.25 10.5L8.75 7L5.25 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/** Figma "Icon / Arrow right" (Button icon layouts). */
+export function ArrowRightIcon({ size = 16, ...props }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true" {...props}>
+      <path d="M3 8H13M8 13L13 8L8 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** Figma "Show hidden columns icon" (eye) and "Hide columns icon" (eye with a line, crossed = off). */
+export function EyeIcon({ crossed = false, ...props }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" {...props}>
+      <path d="M1 9C3.66667 5 6.33333 3 9 3C11.6667 3 14.3333 5 17 9C14.3333 13 11.6667 15 9 15C6.33333 15 3.66667 13 1 9Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="9" cy="9" r="1.75" stroke="currentColor" strokeWidth="1.5" />
+      {crossed && <path d="M2 2L16 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />}
+    </svg>
+  );
+}
+
+/** Figma "Configure columns icon". */
+export function ColumnsIcon(props) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" {...props}>
+      <path d="M1 2H5V16H1V2ZM7 2H11V16H7V2ZM13 2H17V16H13V2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

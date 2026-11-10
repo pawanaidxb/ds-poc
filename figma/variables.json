@@ -87,5 +87,73 @@
   "VariableID:32:4315": {
     "name": "radius/xs",
     "css": "--radius-xs"
+  },
+  "VariableID:160:7829": {
+    "name": "brand/primary/light",
+    "css": "--brand-primary-light"
+  },
+  "VariableID:160:7830": {
+    "name": "brand/primary/dark",
+    "css": "--brand-primary-dark"
+  },
+  "VariableID:160:7831": {
+    "name": "brand/primary-hover/light",
+    "css": "--brand-primary-hover-light"
+  },
+  "VariableID:160:7832": {
+    "name": "brand/primary-hover/dark",
+    "css": "--brand-primary-hover-dark"
+  },
+  "VariableID:160:7833": {
+    "name": "brand/on-primary/light",
+    "css": "--brand-on-primary-light"
+  },
+  "VariableID:160:7834": {
+    "name": "brand/on-primary/dark",
+    "css": "--brand-on-primary-dark"
+  },
+  "VariableID:160:7835": {
+    "name": "brand/primary-subtle/light",
+    "css": "--brand-primary-subtle-light"
+  },
+  "VariableID:160:7836": {
+    "name": "brand/primary-subtle/dark",
+    "css": "--brand-primary-subtle-dark"
+  },
+  "VariableID:160:7837": {
+    "name": "radius/button",
+    "css": "--radius-button"
+  },
+  "VariableID:160:7838": {
+    "name": "font/family/heading",
+    "css": "--font-family-heading"
+  },
+  "VariableID:160:7839": {
+    "name": "font/family/body",
+    "css": "--font-family-body"
+  },
+  "VariableID:160:8067": {
+    "name": "font/family/button",
+    "css": "--font-family-button"
+  },
+  "VariableID:160:7840": {
+    "name": "font/style/heading-regular",
+    "css": "--font-style-heading-regular"
+  },
+  "VariableID:160:7841": {
+    "name": "font/style/heading-semibold",
+    "css": "--font-style-heading-semibold"
+  },
+  "VariableID:160:7842": {
+    "name": "font/style/body-regular",
+    "css": "--font-style-body-regular"
+  },
+  "VariableID:160:7843": {
+    "name": "font/style/body-medium",
+    "css": "--font-style-body-medium"
+  },
+  "VariableID:160:7844": {
+    "name": "font/style/body-semibold",
+    "css": "--font-style-body-semibold"
   }
 }

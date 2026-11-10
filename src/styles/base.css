@@ -1,6 +1,8 @@
 /* Base page styles. Uses tokens only. */
+/* Fonts come from the Figma "Brand" collection; the fallback is Brand A. */
 body {
-  font-family: "Urbanist", system-ui, sans-serif;
+  font-family: var(--font-family-body, "Inter"), system-ui, sans-serif;
   color: var(--color-text);
   background: var(--color-surface);
 }
+h1, h2, h3, h4, h5, h6 { font-family: var(--font-family-heading, "Urbanist"), system-ui, sans-serif; }

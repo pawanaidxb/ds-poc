@@ -1,9 +1,9 @@
 /* Generated from tokens.json by scripts/build-tokens.mjs. Do not edit by hand. */
 
 :root {
-  --color-primary: #3200fb;
-  --color-primary-hover: #000fe2;
-  --color-on-primary: #ffffff;
+  --color-primary: var(--brand-primary-light);
+  --color-primary-hover: var(--brand-primary-hover-light);
+  --color-on-primary: var(--brand-on-primary-light);
   --color-text: #171717;
   --color-text-muted: #737373;
   --color-surface: #ffffff;
@@ -11,7 +11,7 @@
   --color-danger: #d32f2f;
   --color-icon: #525866;
   --color-border-strong: #b5bbc4;
-  --color-primary-subtle: #fff0f5;
+  --color-primary-subtle: var(--brand-primary-subtle-light);
   --color-surface-muted: #f8f9fb;
   --color-surface-sunken: #f3f4f6;
   --color-info: #2e6feb;
@@ -27,10 +27,81 @@
   --radius-xs: 3px;
 }
 
-[data-theme="dark"] {
-  --color-primary: #1a02cc;
-  --color-primary-hover: #0b0aa9;
-  --color-on-primary: #000000;
+/* Brand: Brand A */
+:root {
+  --brand-primary-light: #a00010;
+  --brand-primary-dark: #d1cbff;
+  --brand-primary-hover-light: #c9004d;
+  --brand-primary-hover-dark: #434386;
+  --brand-on-primary-light: #ffffff;
+  --brand-on-primary-dark: #000000;
+  --brand-primary-subtle-light: #fff0f5;
+  --brand-primary-subtle-dark: #3a0d1f;
+  --font-family-heading: Urbanist;
+  --font-family-body: Inter;
+  --font-family-button: Urbanist;
+  --font-style-heading-regular: Regular;
+  --font-style-heading-semibold: SemiBold;
+  --font-style-body-regular: Regular;
+  --font-style-body-medium: Medium;
+  --font-style-body-semibold: Semi Bold;
+  --radius-button: 8px;
+}
+
+/* Brand: Brand B */
+[data-brand="brand-b"] {
+  --brand-primary-light: #1d4ed8;
+  --brand-primary-dark: #8fb4ff;
+  --brand-primary-hover-light: #1e40af;
+  --brand-primary-hover-dark: #6d94f0;
+  --brand-on-primary-light: #ffffff;
+  --brand-on-primary-dark: #0a0a0a;
+  --brand-primary-subtle-light: #eff4ff;
+  --brand-primary-subtle-dark: #0f1d3d;
+  --font-family-heading: Poppins;
+  --font-family-body: DM Sans;
+  --font-family-button: Poppins;
+  --font-style-heading-regular: Regular;
+  --font-style-heading-semibold: SemiBold;
+  --font-style-body-regular: Regular;
+  --font-style-body-medium: Medium;
+  --font-style-body-semibold: SemiBold;
+  --radius-button: 999px;
+}
+
+/* Brand: Brand C */
+[data-brand="brand-c"] {
+  --brand-primary-light: #0f766e;
+  --brand-primary-dark: #5eead4;
+  --brand-primary-hover-light: #115e59;
+  --brand-primary-hover-dark: #2dd4bf;
+  --brand-on-primary-light: #ffffff;
+  --brand-on-primary-dark: #04201d;
+  --brand-primary-subtle-light: #ecfdf8;
+  --brand-primary-subtle-dark: #0b2b27;
+  --font-family-heading: Lora;
+  --font-family-body: IBM Plex Sans;
+  --font-family-button: IBM Plex Sans;
+  --font-style-heading-regular: Regular;
+  --font-style-heading-semibold: SemiBold;
+  --font-style-body-regular: Regular;
+  --font-style-body-medium: Medium;
+  --font-style-body-semibold: SemiBold;
+  --radius-button: 2px;
+}
+
+[data-brand] {
+  --color-primary: var(--brand-primary-light);
+  --color-primary-hover: var(--brand-primary-hover-light);
+  --color-on-primary: var(--brand-on-primary-light);
+  --color-primary-subtle: var(--brand-primary-subtle-light);
+}
+
+[data-theme="dark"],
+[data-theme="dark"] [data-brand] {
+  --color-primary: var(--brand-primary-dark);
+  --color-primary-hover: var(--brand-primary-hover-dark);
+  --color-on-primary: var(--brand-on-primary-dark);
   --color-text: #ebebeb;
   --color-text-muted: #c6c6c6;
   --color-surface: #000000;
@@ -38,7 +109,7 @@
   --color-danger: #bd2a2a;
   --color-icon: #a3a9b5;
   --color-border-strong: #7a808c;
-  --color-primary-subtle: #3a0d1f;
+  --color-primary-subtle: var(--brand-primary-subtle-dark);
   --color-surface-muted: #121212;
   --color-surface-sunken: #1a1a1a;
   --color-info: #6fa8ff;

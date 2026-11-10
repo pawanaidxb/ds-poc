@@ -1,7 +1,7 @@
 .poc-tcell {
   height: 44px; box-sizing: border-box;
   padding: 0 var(--spacing-ms);
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: var(--font-family-body, "Inter"), system-ui, sans-serif;
   font-size: 14px; line-height: 16px; font-weight: 400;
   color: var(--color-text);
   text-align: left; vertical-align: middle;

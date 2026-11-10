@@ -25,11 +25,16 @@ const setKeys = Object.keys(raw).filter((k) => !k.startsWith("$"));
 const looksLikeSets = "$metadata" in raw || "$themes" in raw;
 if (looksLikeSets) {
   const order = raw.$metadata?.tokenSetOrder || setKeys;
-  sets = order.filter((k) => k in raw).map((k) => ({ name: k, tree: raw[k] }));
+  const names = [...order.filter((k) => k in raw), ...setKeys.filter((k) => !order.includes(k))];
+  sets = names.map((k) => ({ name: k, tree: raw[k] }));
 } else {
   sets = [{ name: "tokens", tree: raw }];
 }
 const isDark = (name) => /(^|\/|\s)dark(\s?mode)?$/i.test(name.trim());
+// Brand sets come from the Figma "Brand" collection: "Brand/Brand A", "Brand/Brand B", ...
+// The first brand is the default (:root). Each other brand gets [data-brand="brand-b"].
+const isBrand = (name) => /^brand\//i.test(name.trim());
+const brandSlug = (name) => name.trim().replace(/^brand\//i, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 // 2. Flatten every set into "a.b.c" -> { value, type }
 function flatten(tree, prefix = [], out = {}) {
@@ -44,8 +49,13 @@ function flatten(tree, prefix = [], out = {}) {
 
 const light = {};
 const dark = {};
-for (const s of sets) Object.assign(isDark(s.name) ? dark : light, flatten(s.tree));
-const all = { ...light, ...dark };
+const brands = []; // [{ name, slug, toks }]
+for (const s of sets) {
+  if (isBrand(s.name)) brands.push({ name: s.name.replace(/^brand\//i, ""), slug: brandSlug(s.name), toks: flatten(s.tree) });
+  else Object.assign(isDark(s.name) ? dark : light, flatten(s.tree));
+}
+const brandKeys = new Set(brands.flatMap((b) => Object.keys(b.toks)));
+const all = { ...(brands[0]?.toks || {}), ...light, ...dark };
 let CTX = light; // which values references point to while writing a block
 
 // 3. Helpers: CSS names, references, units
@@ -72,6 +82,7 @@ function resolve(value, seen = new Set()) {
   const whole = value.match(/^\{([^}]+)\}$/);
   if (whole) {
     const ref = whole[1];
+    if (brandKeys.has(ref) && !(ref in CTX && CTX.__brand)) return `var(${cssName(ref)})`;
     if (seen.has(ref) || !(ref in CTX)) return value;
     seen.add(ref);
     return resolve(CTX[ref].value, seen);
@@ -103,6 +114,7 @@ function shadow(s) {
 const block = (sel, toks, ctx) =>
   ((CTX = ctx), `${sel} {\n`) +
   Object.entries(toks)
+    .filter(([n]) => !n.startsWith("__"))
     .flatMap(([n, t]) => toCss(n, t))
     .map(([k, v]) => `  ${k}: ${v};`)
     .join("\n") +
@@ -110,13 +122,23 @@ const block = (sel, toks, ctx) =>
 
 let css = `/* Generated from tokens.json by scripts/build-tokens.mjs. Do not edit by hand. */\n\n`;
 css += block(":root", light, light);
-if (Object.keys(dark).length) css += `\n` + block(`[data-theme="dark"]`, dark, all);
+brands.forEach((b, i) => {
+  const ctx = { ...b.toks, __brand: true };
+  css += `\n/* Brand: ${b.name} */\n` + block(i === 0 ? ":root" : `[data-brand="${b.slug}"]`, b.toks, ctx);
+});
+// Colours that point at a brand token are repeated on [data-brand], so a brand set on
+// any element (not only <html>) re-resolves them for that part of the page.
+const refsBrand = (t) => typeof t.value === "string" && [...t.value.matchAll(/\{([^}]+)\}/g)].some((m) => brandKeys.has(m[1]));
+const pick = (toks) => Object.fromEntries(Object.entries(toks).filter(([, t]) => refsBrand(t)));
+if (brands.length && Object.keys(pick(light)).length) css += `\n` + block(`[data-brand]`, pick(light), light);
+const darkSel = brands.length ? `[data-theme="dark"],\n[data-theme="dark"] [data-brand]` : `[data-theme="dark"]`;
+if (Object.keys(dark).length) css += `\n` + block(darkSel, dark, all);
 fs.mkdirSync(path.dirname(CSS_OUT), { recursive: true });
 fs.writeFileSync(CSS_OUT, css);
 
 // 5. Write design-system.md
 const groups = {};
-for (const n of Object.keys(all)) (groups[n.split(".")[0]] ||= []).push(n);
+for (const n of Object.keys(all)) if (!brandKeys.has(n)) (groups[n.split(".")[0]] ||= []).push(n);
 const hasDark = Object.keys(dark).length > 0;
 let md = `# Design system tokens\n\n`;
 md += `Generated from \`tokens.json\`. Do not edit by hand. Change tokens in Figma and push.\n\n`;
@@ -132,6 +154,16 @@ for (const [g, names] of Object.entries(groups)) {
     if (hasDark) cells.push(show(dark[n], all));
     cells.push(all[n].type || "");
     md += `| ${cells.join(" | ")} |\n`;
+  }
+  md += `\n`;
+}
+if (brands.length) {
+  md += `## Brands\n\n`;
+  md += `Set \`data-brand\` on the page to switch brand: ${brands.map((b, i) => "`" + b.slug + "`" + (i === 0 ? " (default)" : "")).join(", ")}. Light / Dark still uses \`data-theme\`.\n\n`;
+  md += `| Token | CSS variable | ${brands.map((b) => b.name).join(" | ")} |\n| --- | --- | ${brands.map(() => "---").join(" | ")} |\n`;
+  for (const n of brandKeys) {
+    const cells = brands.map((b) => (b.toks[n] ? ((CTX = { ...b.toks, __brand: true }), toCss(n, b.toks[n])).map(([, v]) => v).join(" / ") : ""));
+    md += `| \`${n}\` | \`${cssName(n)}\` | ${cells.join(" | ")} |\n`;
   }
   md += `\n`;
 }

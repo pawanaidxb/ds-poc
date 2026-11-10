@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { TableToolbar } from "../TableToolbar/TableToolbar";
 import { TableFilterChip } from "../TableFilterChip/TableFilterChip";
 import { TableColumnGroup } from "../TableColumnGroup/TableColumnGroup";
@@ -13,18 +13,28 @@ import { TableBulkSelectionBar } from "../TableBulkSelectionBar/TableBulkSelecti
 import { TableColumnMenu } from "../TableColumnMenu/TableColumnMenu";
 import { TableMenuOption } from "../TableMenuOption/TableMenuOption";
 import { TableAdvancedFilterPanel } from "../TableAdvancedFilterPanel/TableAdvancedFilterPanel";
+import { TableColumnConfigPanel } from "../TableColumnConfigPanel/TableColumnConfigPanel";
+import { TableFiltersPanel } from "../TableFiltersPanel/TableFiltersPanel";
+import { XIcon } from "../TableIcons/TableIcons";
 import { Input } from "../Input/Input";
 import { Button } from "../Button/Button";
 import { SAMPLE_ROWS, DEFAULT_COLUMNS, money } from "./sampleData";
 import "./DataTable.css";
 
 /**
- * DataTable — matches the "Data table" component set in Figma (10 states), built from the Table/* parts.
+ * DataTable — matches the "Data table" component set in Figma (15 states), built from the Table/* parts.
  * Figma state -> how to get it in code
  *   Default            -> no options
  *   Sorted             -> click a header's sort icon (or initialSort)
  *   Column filter      -> header filter icon or "Filters" (or initialColumnFilters)
- *   Column visibility  -> "Columns" (or initialHidden)
+ *   Column visibility  -> "Configure columns", untick a column (or initialHidden)
+ *   Columns reordered  -> "Configure columns", drag columns, Apply (or initialOrder)
+ *   Hidden columns shown -> tick them in "Configure columns" and Apply
+ *   Hidden columns shown - default order -> the eye button: shows hidden columns for now, saved setup unchanged (or initialPeek)
+ *   Group by dropdown  -> the "Group by" dropdown in the toolbar (or initialGroupBy)
+ *   Column groups configuration -> "Configure columns" > Groups (or initialConfigView="groups")
+ *   General filters / Custom filters -> "Filters" opens TableFiltersPanel (Figma "Table / Filters panel")
+ *   Column filter      -> a header's filter icon opens "Filter by <column>" (or initialColumnFilters + initialFilterMenu)
  *   Custom filters     -> "Custom filters" panel (or initialRules)
  *   Column resize      -> drag a header's right edge; double-click it for the width menu
  *   Multi-select       -> row checkboxes (or initialSelected)
@@ -42,6 +52,13 @@ export function DataTable({
   initialSort = null,
   initialColumnFilters = {},
   initialHidden = [],
+  initialOrder = null,
+  initialConfigOpen = false,
+  initialConfigView = "columns",
+  initialPeek = false,
+  initialFiltersOpen = false,
+  initialGroupByOpen = false,
+  initialFilterMenu = null,
   initialRules = [],
   initialMatch = "AND",
   initialSelected = [],
@@ -49,9 +66,13 @@ export function DataTable({
   initialPageSize = 12,
 }) {
   const colByKey = useMemo(() => Object.fromEntries(initialColumns.map((c) => [c.key, c])), [initialColumns]);
-  const [order, setOrder] = useState(initialColumns.map((c) => c.key));
+  const defaultOrder = initialColumns.map((c) => c.key);
+  const [order, setOrder] = useState(initialOrder || defaultOrder);
   const [widths, setWidths] = useState(Object.fromEntries(initialColumns.map((c) => [c.key, c.width])));
   const [hidden, setHidden] = useState(new Set(initialHidden));
+  const defaultGroupOf = Object.fromEntries(initialColumns.map((c) => [c.key, c.group || null]));
+  const [groupOf, setGroupOf] = useState(defaultGroupOf);
+  const [peek, setPeek] = useState(initialPeek);
   const [rowOrder, setRowOrder] = useState(initialRows.map((r) => r.id));
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState(initialSort); // { key, dir }
@@ -67,17 +88,30 @@ export function DataTable({
   const [pageSize, setPageSize] = useState(initialPageSize);
   const [menu, setMenu] = useState(null); // { type: "filter"|"columns"|"width", key, left }
   const [draftFilter, setDraftFilter] = useState([]);
-  const [panelOpen, setPanelOpen] = useState(initialRules.length > 0);
+  const [panelOpen, setPanelOpen] = useState(initialFiltersOpen || initialRules.length > 0);
+  const [filterTab, setFilterTab] = useState(initialRules.length > 0 ? "custom" : "general");
+  const [checkKey, setCheckKey] = useState("role");
+  const [draftCol, setDraftCol] = useState(initialColumnFilters);
+  const [valueQuery, setValueQuery] = useState("");
   const [resizing, setResizing] = useState(null);
   const [dragRow, setDragRow] = useState(null);
   const [overRow, setOverRow] = useState(null);
   const [dragCol, setDragCol] = useState(null);
+  const [configOpen, setConfigOpen] = useState(initialConfigOpen);
+  const [configView, setConfigView] = useState(initialConfigView);
+  const [draftOrder, setDraftOrder] = useState(initialOrder || defaultOrder);
+  const [draftHidden, setDraftHidden] = useState(new Set(initialHidden));
+  const [columnNote, setColumnNote] = useState(null);
   const [overCol, setOverCol] = useState(null);
   const headerRefs = useRef({});
+  useEffect(() => { if (initialFilterMenu) openFilter(initialFilterMenu); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const configRef = useRef(null);
+  const [configHeight, setConfigHeight] = useState(0);
   const gridRef = useRef(null);
 
   const byId = useMemo(() => Object.fromEntries(initialRows.map((r) => [r.id, r])), [initialRows]);
-  const visibleCols = order.filter((k) => !hidden.has(k)).map((k) => colByKey[k]);
+  const visibleCols = order.filter((k) => peek || !hidden.has(k)).map((k) => colByKey[k]);
+  const configuredCount = order.filter((k) => !hidden.has(k)).length;
   const show = (col, row) => (col.format ? col.format(row[col.key]) : row[col.key]);
 
   // ---------- filtering ----------
@@ -149,8 +183,14 @@ export function DataTable({
   };
 
   // ---------- menus ----------
+  const openFilters = (tab, key) => {
+    setDraftCol(colFilters); setDraftRules(rules); setDraftMatch(match); setValueQuery("");
+    if (key) setCheckKey(key);
+    setFilterTab(tab); setConfigOpen(false); setPanelOpen(true);
+  };
   const openFilter = (key) => {
     const th = headerRefs.current[key];
+    setValueQuery(""); setPanelOpen(false); setConfigOpen(false);
     setDraftFilter(colFilters[key] || []);
     setMenu({ type: "filter", key, left: th ? th.offsetLeft : 0 });
   };
@@ -181,17 +221,92 @@ export function DataTable({
     setRowOrder(n);
   };
   const dropCol = (targetKey) => {
-    if (!dragCol || dragCol === targetKey || colByKey[dragCol].group !== colByKey[targetKey].group) return;
+    if (!dragCol || dragCol === targetKey || groupOf[dragCol] !== groupOf[targetKey]) return;
     const n = order.filter((k) => k !== dragCol);
     n.splice(n.indexOf(targetKey), 0, dragCol);
     setOrder(n);
   };
 
+  // The configure panel floats over the table; make room when it is taller (Figma "Column groups configuration").
+  useEffect(() => {
+    if (!configOpen || !configRef.current || typeof ResizeObserver === "undefined") { setConfigHeight(0); return undefined; }
+    const ro = new ResizeObserver(([e]) => setConfigHeight(e.target.offsetHeight));
+    ro.observe(configRef.current);
+    return () => ro.disconnect();
+  }, [configOpen]);
+
+  // ---------- configure columns ----------
+  const sameOrder = (a, b) => a.length === b.length && a.every((k, i) => k === b[i]);
+  const describeColumns = (prevOrder, prevHidden, nextOrder, nextHidden) => {
+    const parts = [];
+    const moved = nextOrder.find((k, i) => prevOrder.indexOf(k) !== i && prevOrder.indexOf(k) - i !== -1 && prevOrder.indexOf(k) - i !== 1)
+      || nextOrder.find((k, i) => prevOrder.indexOf(k) > i);
+    if (moved && !sameOrder(prevOrder, nextOrder)) parts.push(`${colByKey[moved].title} moved to position ${nextOrder.indexOf(moved) + 1}`);
+    const nowHidden = nextOrder.filter((k) => nextHidden.has(k) && !prevHidden.has(k)).map((k) => colByKey[k].title);
+    const restored = nextOrder.filter((k) => !nextHidden.has(k) && prevHidden.has(k)).map((k) => colByKey[k].title);
+    if (nextHidden.size === 0 && restored.length) parts.unshift(`All ${nextOrder.length} columns visible`);
+    if (restored.length) parts.push(`${restored.join(", ")} restored`);
+    if (nowHidden.length) parts.push(`${nowHidden.join(", ")} hidden`);
+    return parts.join(" · ") || null;
+  };
+  const applyColumns = (nextOrder, nextHidden, groupsChanged = false) => {
+    const note = describeColumns(groupsChanged ? nextOrder : order, hidden, nextOrder, nextHidden);
+    setColumnNote(groupsChanged ? ["Column groups updated", note].filter(Boolean).join(" · ") : note);
+    setOrder(nextOrder);
+    setHidden(nextHidden);
+  };
+  const groupsFrom = (ord, gOf) => {
+    const list = [];
+    ord.forEach((k) => {
+      const name = gOf[k];
+      if (!name) return;
+      let g = list.find((x) => x.name === name);
+      if (!g) { g = { id: `g-${name}`, name, keys: [] }; list.push(g); }
+      g.keys.push(k);
+    });
+    return list;
+  };
+  const [draftGroups, setDraftGroups] = useState(() => groupsFrom(initialOrder || defaultOrder, defaultGroupOf));
+  const openConfig = () => {
+    setDraftOrder(order); setDraftHidden(new Set(hidden)); setDraftGroups(groupsFrom(order, groupOf));
+    setMenu(null); setPanelOpen(false); setConfigOpen(!configOpen);
+  };
+  const applyConfig = () => {
+    const groups = draftGroups.filter((g) => g.keys.length && (g.name || "").trim());
+    const nextGroupOf = Object.fromEntries(order.map((k) => [k, null]));
+    groups.forEach((g) => g.keys.forEach((k) => { nextGroupOf[k] = g.name.trim(); }));
+    const grouped = new Set(groups.flatMap((g) => g.keys));
+    const nextOrder = configView === "groups"
+      ? [...groups.flatMap((g) => g.keys), ...draftOrder.filter((k) => !grouped.has(k))]
+      : draftOrder;
+    setGroupOf(nextGroupOf);
+    setDraftGroups(groupsFrom(nextOrder, nextGroupOf));
+    setPeek(false);
+    const changed = order.some((k) => (groupOf[k] || null) !== (nextGroupOf[k] || null));
+    applyColumns(nextOrder, new Set(draftHidden), changed);
+  };
+  const moveDraft = (fromKey, toKey) => {
+    const n = draftOrder.filter((k) => k !== fromKey);
+    const to = draftOrder.indexOf(toKey) > draftOrder.indexOf(fromKey) ? n.indexOf(toKey) + 1 : n.indexOf(toKey);
+    n.splice(to, 0, fromKey);
+    setDraftOrder(n);
+  };
+  const draftNote = (() => {
+    const hiddenTitles = draftOrder.filter((k) => draftHidden.has(k)).map((k) => colByKey[k].title);
+    if (sameOrder(draftOrder, defaultOrder)) return null;
+    if (draftOrder[0] !== defaultOrder[0]) {
+      const first = `${colByKey[draftOrder[0]].title} is now first.`;
+      return hiddenTitles.length ? `${first} ${hiddenTitles.join(", ")} ${hiddenTitles.length > 1 ? "remain" : "remains"} hidden.` : first;
+    }
+    return null;
+  })();
+
   // ---------- groups ----------
   const groupsInOrder = [];
   visibleCols.forEach((c) => {
     const last = groupsInOrder[groupsInOrder.length - 1];
-    if (last && last.name === c.group) last.span++; else groupsInOrder.push({ name: c.group, span: 1 });
+    const name = groupOf[c.key] || "";
+    if (last && last.name === name) last.span++; else groupsInOrder.push({ name, span: 1 });
   });
   const grouped = groupBy
     ? Object.entries(pageRows.reduce((acc, r) => ((acc[r[groupBy]] = acc[r[groupBy]] || []).push(r), acc), {}))
@@ -227,26 +342,44 @@ export function DataTable({
         <span className="poc-dt__crumb">{breadcrumb} · {initialRows.length} {noun}</span>
       </header>
 
-      <TableToolbar search={search} onSearch={(v) => { setSearch(v); setPage(1); }} filterCount={activeFilterCount}
-        groupBy={groupBy ? colByKey[groupBy].title : null} visibleColumns={visibleCols.length} totalColumns={order.length}
-        onFilters={() => (menu && menu.type === "filter" ? setMenu(null) : openFilter("status"))}
-        onCustomFilters={() => { setDraftRules(rules); setDraftMatch(match); setPanelOpen(!panelOpen); }}
-        onGroupBy={() => { const opts = [null, "workspace", "owner", "status"]; setGroupBy(opts[(opts.indexOf(groupBy) + 1) % opts.length]); setCollapsed(new Set()); }}
-        onColumns={() => setMenu(menu && menu.type === "columns" ? null : { type: "columns" })}>
-        {chips.map((c) => <TableFilterChip key={c.id} onRemove={c.remove}>{c.label}</TableFilterChip>)}
-      </TableToolbar>
+      <TableToolbar search={search} onSearch={(v) => { setSearch(v); setPage(1); }} filterCount={activeFilterCount} filtersOpen={panelOpen}
+        visibleColumns={configuredCount} totalColumns={order.length} peek={peek}
+        onTogglePeek={() => setPeek(!peek)}
+        groupBy={groupBy} onGroupByChange={(v) => { setGroupBy(v); setCollapsed(new Set()); }}
+        configureOpen={configOpen} onConfigureColumns={openConfig} defaultGroupByOpen={initialGroupByOpen}
+        onFilters={() => { if (panelOpen) setPanelOpen(false); else openFilters(filterTab); }} />
 
       <div className="poc-dt__context">
         {selected.size > 0 ? (
           <TableBulkSelectionBar count={selected.size} noun={noun} onClear={() => setSelected(new Set())} />
         ) : (
-          <span className="poc-dt__view">All {noun} <span aria-hidden="true">/</span> {activeFilterCount ? `${activeFilterCount} filter${activeFilterCount > 1 ? "s" : ""} applied` : "No filters applied"}</span>
+          chips.length ? (
+            <span className="poc-dt__chips">
+              {chips.map((c) => <TableFilterChip key={c.id} onRemove={c.remove}>{c.label}</TableFilterChip>)}
+              <span className="poc-dt__view">{rules.some((r) => r.value !== "") ? (match === "AND" ? "Match all conditions" : "Match any condition") : `${sorted.length} of ${initialRows.length} ${noun}`}</span>
+            </span>
+          ) : peek ? (
+            <span className="poc-dt__view poc-dt__view--columns" role="status">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden="true"><rect x="2" y="2.5" width="12" height="11" rx="1.5" /><path d="M2 6h12M6 6v7.5" /></svg>
+              Temporarily showing hidden columns · Saved configuration unchanged
+            </span>
+          ) : columnNote ? (
+            <span className="poc-dt__view poc-dt__view--columns" role="status">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden="true"><rect x="2" y="2.5" width="12" height="11" rx="1.5" /><path d="M2 6h12M6 6v7.5" /></svg>
+              {columnNote}
+            </span>
+          ) : (
+            <span className="poc-dt__view poc-dt__view--columns">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden="true"><rect x="2" y="2.5" width="12" height="11" rx="1.5" /><path d="M2 6h12M6 6v7.5" /></svg>
+              All {noun} <span aria-hidden="true">/</span> No filters applied
+            </span>
+          )
         )}
         <span className="poc-dt__pinned">Headers pinned</span>
       </div>
 
-      <div className="poc-dt__body">
-        <div className="poc-dt__grid" ref={gridRef}>
+      <div className={`poc-dt__body${panelOpen ? " has-filters" : ""}`}>
+        <div className="poc-dt__grid" ref={gridRef} style={configHeight ? { minHeight: configHeight - 50 } : undefined}>
           <div className="poc-dt__scroll">
             <table className="poc-dt__table" style={{ width: 44 + visibleCols.reduce((s, c) => s + widths[c.key], 0) }}>
               <colgroup>
@@ -256,7 +389,7 @@ export function DataTable({
               <thead>
                 <tr className="poc-dt__groups">
                   <th className="poc-dt__groupspacer" aria-hidden="true" />
-                  {groupsInOrder.map((g, i) => <TableColumnGroup key={g.name + i} title={g.name} colSpan={g.span} dragging={dragCol && colByKey[dragCol].group === g.name} />)}
+                  {groupsInOrder.map((g, i) => <TableColumnGroup key={g.name + i} title={g.name} colSpan={g.span} dragging={dragCol && (groupOf[dragCol] || "") === g.name} />)}
                 </tr>
                 <tr className="poc-dt__headers">
                   <th className="poc-dt__selectall" scope="col">
@@ -271,7 +404,7 @@ export function DataTable({
                       filtered={!!(colFilters[c.key] && colFilters[c.key].length) || rules.some((r) => r.value !== "" && r.field === c.title)}
                       onFilter={() => (menu && menu.key === c.key && menu.type === "filter" ? setMenu(null) : openFilter(c.key))}
                       resizing={resizing === c.key} onResizeStart={startResize(c.key)}
-                      dragging={dragCol === c.key} dropTarget={overCol === c.key && dragCol && dragCol !== c.key && colByKey[dragCol].group === c.group}
+                      dragging={dragCol === c.key} dropTarget={overCol === c.key && dragCol && dragCol !== c.key && groupOf[dragCol] === groupOf[c.key]}
                       dragHandleProps={{ draggable: true, label: `Drag ${c.title} column`,
                         onDragStart: (e) => { e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", c.key); setDragCol(c.key); },
                         onDragEnd: () => { setDragCol(null); setOverCol(null); } }}
@@ -299,7 +432,7 @@ export function DataTable({
               <tfoot>
                 <tr>
                   <td colSpan={colCount} className="poc-dt__totals">
-                    <span className="poc-dt__totals-label">Page total · {pageRows.length} {noun}</span>
+                    <span className="poc-dt__totals-label">{activeFilterCount ? "Filtered total" : "Page total"} · {pageRows.length} {noun}</span>
                     <span className="poc-dt__totals-nums"><span>{sum(pageRows, "seats")} seats</span><strong>{money(sum(pageRows, "arr"))} ARR</strong></span>
                   </td>
                 </tr>
@@ -315,30 +448,21 @@ export function DataTable({
                   <Button variant="primary" onClick={() => { setColFilters({ ...colFilters, [menu.key]: draftFilter }); setPage(1); setMenu(null); }}>Apply</Button>
                 </>}>
                 {(() => {
-                  const vals = valuesFor(menu.key);
-                  const all = draftFilter.length === vals.length;
+                  const col = colByKey[menu.key];
+                  const vals = valuesFor(menu.key).filter(([v]) => !valueQuery || v.toLowerCase().includes(valueQuery.toLowerCase()));
+                  const all = vals.length > 0 && vals.every(([v]) => draftFilter.includes(v));
                   return (
                     <>
-                      <TableMenuOption label="Select all" detail={String(ordered.length)} selected={all} onSelect={() => setDraftFilter(all ? [] : vals.map(([v]) => v))} />
+                      <Input size="small" width="100%" showLabel={false} showHelper={false} label={`Search ${col.title.toLowerCase()} values`} placeholder="Search values…"
+                        value={valueQuery} onChange={(e) => setValueQuery(e.target.value)} />
+                      <TableMenuOption label="Select all" detail={String(ordered.length)} selected={all} indeterminate={!all && vals.some(([v]) => draftFilter.includes(v))} onSelect={() => setDraftFilter(all ? [] : vals.map(([v]) => v))} />
                       {vals.map(([v, n]) => (
-                        <TableMenuOption key={v} label={colByKey[menu.key].format ? colByKey[menu.key].format(colByKey[menu.key].type === "number" ? Number(v) : v) : v} detail={String(n)}
+                        <TableMenuOption key={v} label={col.format ? col.format(col.type === "number" ? Number(v) : v) : v} detail={String(n)}
                           selected={draftFilter.includes(v)} onSelect={() => setDraftFilter(draftFilter.includes(v) ? draftFilter.filter((x) => x !== v) : [...draftFilter, v])} />
                       ))}
                     </>
                   );
                 })()}
-              </TableColumnMenu>
-            </div>
-          )}
-
-          {menu && menu.type === "columns" && (
-            <div className="poc-dt__popover poc-dt__popover--right">
-              <TableColumnMenu title="Show columns" note={`${visibleCols.length} of ${order.length} data columns shown`} onClose={() => setMenu(null)}
-                footer={<Button variant="secondary" onClick={() => setHidden(new Set())}>Restore defaults</Button>}>
-                {order.map((k) => (
-                  <TableMenuOption key={k} label={colByKey[k].title} showDetail={false} selected={!hidden.has(k)} disabled={k === "account"}
-                    onSelect={() => { const n = new Set(hidden); n.has(k) ? n.delete(k) : n.add(k); setHidden(n); }} />
-                ))}
               </TableColumnMenu>
             </div>
           )}
@@ -355,22 +479,58 @@ export function DataTable({
               </TableColumnMenu>
             </div>
           )}
+          {configOpen && (
+            <div className="poc-dt__config" ref={configRef}>
+              <TableColumnConfigPanel
+                columns={draftOrder.map((k) => ({ key: k, title: colByKey[k].title, visible: !draftHidden.has(k) }))}
+                defaultOrder={sameOrder(draftOrder, defaultOrder)}
+                note={draftHidden.size ? draftNote : null}
+                view={configView} onViewChange={setConfigView}
+                groups={draftGroups} onGroupsChange={setDraftGroups}
+                onToggle={(k) => { const n = new Set(draftHidden); n.has(k) ? n.delete(k) : n.add(k); setDraftHidden(n); }}
+                onMove={moveDraft}
+                onReset={() => { setDraftOrder(defaultOrder); setDraftGroups(groupsFrom(defaultOrder, defaultGroupOf)); }}
+                onApply={applyConfig}
+                onClose={() => setConfigOpen(false)} />
+            </div>
+          )}
         </div>
 
-        {panelOpen && (
-          <TableAdvancedFilterPanel rules={rulesForPanel} match={draftMatch} onMatchChange={setDraftMatch} matchCount={previewCount}
-            summary={draftRules.filter((r) => r.value !== "").map((r) => `${r.field} ${r.operator} ${r.value}`).join(` ${draftMatch} `) || "No conditions yet"}
-            onRuleChange={(id, next) => setDraftRules(draftRules.map((r) => (r.id === id ? { ...r, ...next } : r)))}
-            onRuleRemove={(id) => setDraftRules(draftRules.filter((r) => r.id !== id))}
-            onAddRule={() => setDraftRules([...draftRules, { id: Date.now(), field: "Status", operator: "is", value: "" }])}
-            onApply={() => { setRules(draftRules); setMatch(draftMatch); setPage(1); }}
-            onClear={() => { setDraftRules([]); setRules([]); }}
-            onClose={() => setPanelOpen(false)} />
-        )}
+        {panelOpen && (() => {
+          const col = colByKey[checkKey];
+          const fmt = (v) => (col.format ? col.format(col.type === "number" ? Number(v) : v) : v);
+          const chosen = draftCol[checkKey] || [];
+          return (
+            <div className="poc-dt__filterscol"><TableFiltersPanel tab={filterTab} onTabChange={setFilterTab} onClose={() => setPanelOpen(false)}
+              fields={["status", "workspace"].filter((k) => colByKey[k] && k !== checkKey).map((k) => ({
+                key: k, label: colByKey[k].title, placeholder: k === "status" ? "All statuses" : "All workspaces",
+                options: [{ value: "__all", label: k === "status" ? "All statuses" : "All workspaces" }, ...valuesFor(k).map(([v]) => ({ value: v, label: v }))],
+                value: (draftCol[k] && draftCol[k][0]) || "__all",
+                onChange: (v) => { const n = { ...draftCol }; if (!v || v === "__all") delete n[k]; else n[k] = [v]; setDraftCol(n); },
+              }))}
+              checklist={{
+                title: col.title, total: ordered.length, query: valueQuery, onQueryChange: setValueQuery, selected: chosen,
+                values: valuesFor(checkKey).map(([v, n]) => ({ value: v, label: fmt(v), count: n })),
+                onToggle: (v) => setDraftCol({ ...draftCol, [checkKey]: chosen.includes(v) ? chosen.filter((x) => x !== v) : [...chosen, v] }),
+                onToggleAll: (on, vals) => setDraftCol({ ...draftCol, [checkKey]: on ? vals : [] }),
+              }}
+              onReset={() => setDraftCol({})}
+              onApply={() => { const n = Object.fromEntries(Object.entries(draftCol).filter(([, v]) => v && v.length)); setColFilters(n); setPage(1); }}
+              custom={{
+                rules: rulesForPanel, match: draftMatch, onMatchChange: setDraftMatch, matchCount: previewCount,
+                summary: draftRules.filter((r) => r.value !== "").map((r) => `${r.field} ${r.operator} ${r.value}`).join(` ${draftMatch} `) || "No conditions yet",
+                onRuleChange: (id, next) => setDraftRules(draftRules.map((r) => (r.id === id ? { ...r, ...next } : r))),
+                onRuleRemove: (id) => setDraftRules(draftRules.filter((r) => r.id !== id)),
+                onAddRule: () => setDraftRules([...draftRules, { id: Date.now(), field: "Status", operator: "is", value: "" }]),
+                onApply: () => { setRules(draftRules); setMatch(draftMatch); setPage(1); },
+                onClear: () => { setDraftRules([]); setRules([]); },
+              }} /></div>
+          );
+        })()}
       </div>
 
       <footer className="poc-dt__footer">
-        <span className="poc-dt__showing">Showing {firstShown}–{firstShown ? firstShown + pageRows.length - 1 : 0} of {sorted.length} {noun}</span>
+        <span className="poc-dt__showing">Showing {firstShown}–{firstShown ? firstShown + pageRows.length - 1 : 0} of {sorted.length} {noun}{sorted.length < initialRows.length ? ` · filtered from ${initialRows.length}` : ""}</span>
         <TablePagination page={safePage} pageCount={pageCount} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(s) => { setPageSize(s); setPage(1); }} />
       </footer>
     </section>
