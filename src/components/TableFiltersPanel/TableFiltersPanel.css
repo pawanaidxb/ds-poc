@@ -1,0 +1,18 @@
+/* TableFiltersPanel — Figma "Table / Filters panel": 342px, padding spacing-ml, border-left, surface fill. */
+.poc-tfp {
+  width: 344px; flex: none; box-sizing: border-box;
+  display: flex; flex-direction: column; gap: var(--spacing-ml);
+  padding: var(--spacing-ml); background: var(--color-surface); border-left: 1px solid var(--color-border);
+  font-family: "Inter", system-ui, sans-serif; color: var(--color-text);
+}
+.poc-tfp__head { display: flex; align-items: center; justify-content: space-between; }
+.poc-tfp__title { margin: 0; font-size: 15px; line-height: 18px; font-weight: 600; }
+.poc-tfp__x { display: inline-grid; place-items: center; padding: 0; border: 0; background: none; color: var(--color-text-muted); cursor: pointer; }
+.poc-tfp__tabs { display: flex; gap: var(--spacing-sm); }
+/* Figma General tab: gap spacing-ms; fields stack with gap spacing-sm. */
+.poc-tfp__general { display: flex; flex-direction: column; gap: var(--spacing-ms); }
+.poc-tfp__fields { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+.poc-tfp__fields .poc-dd__label, .poc-tfp__label { font-size: 12px; line-height: 16px; font-weight: 400; color: var(--color-text); }
+.poc-tfp__checklist { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+.poc-tfp__divider { margin: 0; border: 0; border-top: 1px solid var(--color-border); }
+.poc-tfp__actions { display: flex; justify-content: space-between; gap: var(--spacing-sm); }

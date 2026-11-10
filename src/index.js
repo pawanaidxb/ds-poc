@@ -31,5 +31,6 @@ export { TableToolbar } from "./components/TableToolbar/TableToolbar";
 export { TableBulkSelectionBar } from "./components/TableBulkSelectionBar/TableBulkSelectionBar";
 export { TableDropIndicator } from "./components/TableDropIndicator/TableDropIndicator";
 export { TableDragPreview } from "./components/TableDragPreview/TableDragPreview";
+export { TableFiltersPanel } from "./components/TableFiltersPanel/TableFiltersPanel";
 export { TableAdvancedFilterPanel } from "./components/TableAdvancedFilterPanel/TableAdvancedFilterPanel";
 export { DataTable } from "./components/DataTable/DataTable";

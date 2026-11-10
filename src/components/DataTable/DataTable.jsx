@@ -14,7 +14,7 @@ import { TableColumnMenu } from "../TableColumnMenu/TableColumnMenu";
 import { TableMenuOption } from "../TableMenuOption/TableMenuOption";
 import { TableAdvancedFilterPanel } from "../TableAdvancedFilterPanel/TableAdvancedFilterPanel";
 import { TableColumnConfigPanel } from "../TableColumnConfigPanel/TableColumnConfigPanel";
-import { Dropdown } from "../Dropdown/Dropdown";
+import { TableFiltersPanel } from "../TableFiltersPanel/TableFiltersPanel";
 import { XIcon } from "../TableIcons/TableIcons";
 import { Input } from "../Input/Input";
 import { Button } from "../Button/Button";
@@ -33,7 +33,8 @@ import "./DataTable.css";
  *   Hidden columns shown - default order -> the eye button: shows hidden columns for now, saved setup unchanged (or initialPeek)
  *   Group by dropdown  -> the "Group by" dropdown in the toolbar (or initialGroupBy)
  *   Column groups configuration -> "Configure columns" > Groups (or initialConfigView="groups")
- *   Column filter / Custom filters -> "Filters" opens the side panel: General filters / Custom filters tabs
+ *   General filters / Custom filters -> "Filters" opens TableFiltersPanel (Figma "Table / Filters panel")
+ *   Column filter      -> a header's filter icon opens "Filter by <column>" (or initialColumnFilters + initialFilterMenu)
  *   Custom filters     -> "Custom filters" panel (or initialRules)
  *   Column resize      -> drag a header's right edge; double-click it for the width menu
  *   Multi-select       -> row checkboxes (or initialSelected)
@@ -57,6 +58,7 @@ export function DataTable({
   initialPeek = false,
   initialFiltersOpen = false,
   initialGroupByOpen = false,
+  initialFilterMenu = null,
   initialRules = [],
   initialMatch = "AND",
   initialSelected = [],
@@ -102,6 +104,7 @@ export function DataTable({
   const [columnNote, setColumnNote] = useState(null);
   const [overCol, setOverCol] = useState(null);
   const headerRefs = useRef({});
+  useEffect(() => { if (initialFilterMenu) openFilter(initialFilterMenu); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const configRef = useRef(null);
   const [configHeight, setConfigHeight] = useState(0);
   const gridRef = useRef(null);
@@ -187,6 +190,7 @@ export function DataTable({
   };
   const openFilter = (key) => {
     const th = headerRefs.current[key];
+    setValueQuery(""); setPanelOpen(false); setConfigOpen(false);
     setDraftFilter(colFilters[key] || []);
     setMenu({ type: "filter", key, left: th ? th.offsetLeft : 0 });
   };
@@ -398,7 +402,7 @@ export function DataTable({
                     <TableHeaderCell key={c.key} ref={(el) => { headerRefs.current[c.key] = el; }} title={c.title} align={c.align || "left"}
                       sort={sort && sort.key === c.key ? sort.dir : "none"} onSort={() => cycleSort(c.key)}
                       filtered={!!(colFilters[c.key] && colFilters[c.key].length) || rules.some((r) => r.value !== "" && r.field === c.title)}
-                      onFilter={() => openFilters("general", c.key)}
+                      onFilter={() => (menu && menu.key === c.key && menu.type === "filter" ? setMenu(null) : openFilter(c.key))}
                       resizing={resizing === c.key} onResizeStart={startResize(c.key)}
                       dragging={dragCol === c.key} dropTarget={overCol === c.key && dragCol && dragCol !== c.key && groupOf[dragCol] === groupOf[c.key]}
                       dragHandleProps={{ draggable: true, label: `Drag ${c.title} column`,
@@ -436,6 +440,33 @@ export function DataTable({
             </table>
           </div>
 
+          {menu && menu.type === "filter" && (
+            <div className="poc-dt__popover" style={{ left: Math.min(menu.left, 9999) }}>
+              <TableColumnMenu title={`Filter by ${colByKey[menu.key].title.toLowerCase()}`} onClose={() => setMenu(null)}
+                footer={<>
+                  <Button variant="secondary" onClick={() => setDraftFilter([])}>Reset</Button>
+                  <Button variant="primary" onClick={() => { setColFilters({ ...colFilters, [menu.key]: draftFilter }); setPage(1); setMenu(null); }}>Apply</Button>
+                </>}>
+                {(() => {
+                  const col = colByKey[menu.key];
+                  const vals = valuesFor(menu.key).filter(([v]) => !valueQuery || v.toLowerCase().includes(valueQuery.toLowerCase()));
+                  const all = vals.length > 0 && vals.every(([v]) => draftFilter.includes(v));
+                  return (
+                    <>
+                      <Input size="small" width="100%" showLabel={false} showHelper={false} label={`Search ${col.title.toLowerCase()} values`} placeholder="Search values…"
+                        value={valueQuery} onChange={(e) => setValueQuery(e.target.value)} />
+                      <TableMenuOption label="Select all" detail={String(ordered.length)} selected={all} indeterminate={!all && vals.some(([v]) => draftFilter.includes(v))} onSelect={() => setDraftFilter(all ? [] : vals.map(([v]) => v))} />
+                      {vals.map(([v, n]) => (
+                        <TableMenuOption key={v} label={col.format ? col.format(col.type === "number" ? Number(v) : v) : v} detail={String(n)}
+                          selected={draftFilter.includes(v)} onSelect={() => setDraftFilter(draftFilter.includes(v) ? draftFilter.filter((x) => x !== v) : [...draftFilter, v])} />
+                      ))}
+                    </>
+                  );
+                })()}
+              </TableColumnMenu>
+            </div>
+          )}
+
           {menu && menu.type === "width" && (
             <div className="poc-dt__popover" style={{ left: menu.left }}>
               <TableColumnMenu title={`${colByKey[menu.key].title} column`} note={`Width · ${widths[menu.key]} px`} onClose={() => setMenu(null)}
@@ -465,62 +496,37 @@ export function DataTable({
           )}
         </div>
 
-        {panelOpen && (
-          <aside className="poc-dt__filters" aria-label="Filters">
-            <div className="poc-dt__filters-head">
-              <h3 className="poc-dt__filters-title">Filters</h3>
-              <button type="button" className="poc-dt__filters-x" onClick={() => setPanelOpen(false)} aria-label="Close filters"><XIcon size={14} /></button>
-            </div>
-            <div className="poc-dt__filters-tabs" role="tablist" aria-label="Filter type">
-              <Button role="tab" aria-selected={filterTab === "general"} variant={filterTab === "general" ? "primary" : "secondary"} onClick={() => setFilterTab("general")}>General filters</Button>
-              <Button role="tab" aria-selected={filterTab === "custom"} variant={filterTab === "custom" ? "primary" : "secondary"} onClick={() => setFilterTab("custom")}>Custom filters</Button>
-            </div>
-            {filterTab === "general" ? (
-              <div className="poc-dt__general">
-                {["status", "workspace"].filter((k) => colByKey[k] && k !== checkKey).map((k) => (
-                  <Dropdown key={k} label={colByKey[k].title} showHelper={false} width="100%" noun={colByKey[k].title.toLowerCase()}
-                    placeholder={k === "status" ? "All statuses" : "All workspaces"} searchPlaceholder={`Search ${colByKey[k].title.toLowerCase()}…`}
-                    options={[{ value: "__all", label: k === "status" ? "All statuses" : "All workspaces" }, ...valuesFor(k).map(([v]) => ({ value: v, label: v }))]}
-                    value={(draftCol[k] && draftCol[k][0]) || "__all"}
-                    onChange={(v) => { const n = { ...draftCol }; if (!v || v === "__all") delete n[k]; else n[k] = [v]; setDraftCol(n); }} />
-                ))}
-                {(() => {
-                  const vals = valuesFor(checkKey).filter(([v]) => !valueQuery || v.toLowerCase().includes(valueQuery.toLowerCase()));
-                  const chosen = draftCol[checkKey] || [];
-                  const all = vals.length > 0 && vals.every(([v]) => chosen.includes(v));
-                  const col = colByKey[checkKey];
-                  const label = (v) => (col.format ? col.format(col.type === "number" ? Number(v) : v) : v);
-                  return (
-                    <div className="poc-dt__checklist" role="group" aria-label={col.title}>
-                      <span className="poc-dt__filters-label">{col.title}</span>
-                      <Input size="small" width="100%" showLabel={false} showHelper={false} label={`Search ${col.title.toLowerCase()} values`} placeholder="Search values…"
-                        value={valueQuery} onChange={(e) => setValueQuery(e.target.value)} />
-                      <TableMenuOption label="Select all" detail={String(ordered.length)} selected={all}
-                        onSelect={() => setDraftCol({ ...draftCol, [checkKey]: all ? [] : vals.map(([v]) => v) })} />
-                      {vals.map(([v, n]) => (
-                        <TableMenuOption key={v} label={label(v)} detail={String(n)} selected={chosen.includes(v)}
-                          onSelect={() => setDraftCol({ ...draftCol, [checkKey]: chosen.includes(v) ? chosen.filter((x) => x !== v) : [...chosen, v] })} />
-                      ))}
-                    </div>
-                  );
-                })()}
-                <hr className="poc-dt__filters-divider" />
-                <div className="poc-dt__filters-actions">
-                  <Button variant="secondary" onClick={() => setDraftCol({})}>Reset</Button>
-                  <Button variant="primary" onClick={() => { const n = Object.fromEntries(Object.entries(draftCol).filter(([, v]) => v && v.length)); setColFilters(n); setPage(1); }}>Apply</Button>
-                </div>
-              </div>
-            ) : (
-              <TableAdvancedFilterPanel showHeader={false} rules={rulesForPanel} match={draftMatch} onMatchChange={setDraftMatch} matchCount={previewCount}
-                summary={draftRules.filter((r) => r.value !== "").map((r) => `${r.field} ${r.operator} ${r.value}`).join(` ${draftMatch} `) || "No conditions yet"}
-                onRuleChange={(id, next) => setDraftRules(draftRules.map((r) => (r.id === id ? { ...r, ...next } : r)))}
-                onRuleRemove={(id) => setDraftRules(draftRules.filter((r) => r.id !== id))}
-                onAddRule={() => setDraftRules([...draftRules, { id: Date.now(), field: "Status", operator: "is", value: "" }])}
-                onApply={() => { setRules(draftRules); setMatch(draftMatch); setPage(1); }}
-                onClear={() => { setDraftRules([]); setRules([]); }} />
-            )}
-          </aside>
-        )}
+        {panelOpen && (() => {
+          const col = colByKey[checkKey];
+          const fmt = (v) => (col.format ? col.format(col.type === "number" ? Number(v) : v) : v);
+          const chosen = draftCol[checkKey] || [];
+          return (
+            <TableFiltersPanel tab={filterTab} onTabChange={setFilterTab} onClose={() => setPanelOpen(false)}
+              fields={["status", "workspace"].filter((k) => colByKey[k] && k !== checkKey).map((k) => ({
+                key: k, label: colByKey[k].title, placeholder: k === "status" ? "All statuses" : "All workspaces",
+                options: [{ value: "__all", label: k === "status" ? "All statuses" : "All workspaces" }, ...valuesFor(k).map(([v]) => ({ value: v, label: v }))],
+                value: (draftCol[k] && draftCol[k][0]) || "__all",
+                onChange: (v) => { const n = { ...draftCol }; if (!v || v === "__all") delete n[k]; else n[k] = [v]; setDraftCol(n); },
+              }))}
+              checklist={{
+                title: col.title, total: ordered.length, query: valueQuery, onQueryChange: setValueQuery, selected: chosen,
+                values: valuesFor(checkKey).map(([v, n]) => ({ value: v, label: fmt(v), count: n })),
+                onToggle: (v) => setDraftCol({ ...draftCol, [checkKey]: chosen.includes(v) ? chosen.filter((x) => x !== v) : [...chosen, v] }),
+                onToggleAll: (on, vals) => setDraftCol({ ...draftCol, [checkKey]: on ? vals : [] }),
+              }}
+              onReset={() => setDraftCol({})}
+              onApply={() => { const n = Object.fromEntries(Object.entries(draftCol).filter(([, v]) => v && v.length)); setColFilters(n); setPage(1); }}
+              custom={{
+                rules: rulesForPanel, match: draftMatch, onMatchChange: setDraftMatch, matchCount: previewCount,
+                summary: draftRules.filter((r) => r.value !== "").map((r) => `${r.field} ${r.operator} ${r.value}`).join(` ${draftMatch} `) || "No conditions yet",
+                onRuleChange: (id, next) => setDraftRules(draftRules.map((r) => (r.id === id ? { ...r, ...next } : r))),
+                onRuleRemove: (id) => setDraftRules(draftRules.filter((r) => r.id !== id)),
+                onAddRule: () => setDraftRules([...draftRules, { id: Date.now(), field: "Status", operator: "is", value: "" }]),
+                onApply: () => { setRules(draftRules); setMatch(draftMatch); setPage(1); },
+                onClear: () => { setDraftRules([]); setRules([]); },
+              }} />
+          );
+        })()}
       </div>
 
       <footer className="poc-dt__footer">

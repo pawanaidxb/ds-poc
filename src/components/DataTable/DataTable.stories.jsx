@@ -13,7 +13,8 @@ export default {
 
 export const Default = { args: {} };
 export const Sorted = { args: { initialSort: { key: "arr", dir: "desc" } } };
-export const ColumnFilter = { args: { initialColumnFilters: { role: ["Editor"] }, initialFiltersOpen: true } };
+export const ColumnFilter = { args: { initialColumnFilters: { role: ["Editor"] }, initialFilterMenu: "role" } };
+export const GeneralFilters = { args: { initialColumnFilters: { role: ["Editor"] }, initialFiltersOpen: true } };
 export const ColumnVisibility = { args: { initialHidden: ["renewal"] } };
 export const CustomFilters = {
   args: {
