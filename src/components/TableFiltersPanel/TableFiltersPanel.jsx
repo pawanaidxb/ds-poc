@@ -76,8 +76,8 @@ export function TableFiltersPanel({ tab = "general", onTabChange, onClose, field
           </>
         ) : (
           <>
-            <Button variant="primary" disabled={custom.disabled} onClick={custom.onApply}>Apply filters</Button>
             <Button variant="secondary" disabled={custom.disabled} onClick={custom.onClear}>Clear all</Button>
+            <Button variant="primary" disabled={custom.disabled} onClick={custom.onApply}>Apply filters</Button>
           </>
         )}
       </div>

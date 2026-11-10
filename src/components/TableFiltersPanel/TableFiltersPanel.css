@@ -28,4 +28,4 @@
   border-top: 1px solid var(--color-border); background: var(--color-surface);
 }
 .poc-tfp__footer--general { justify-content: space-between; }
-.poc-tfp__footer--custom { justify-content: flex-start; }
+.poc-tfp__footer--custom { justify-content: flex-end; }
